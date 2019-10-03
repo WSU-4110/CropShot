@@ -5,9 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -52,6 +54,18 @@ public class MainActivity extends AppCompatActivity {
         photoPickerintent.setDataAndType(data, "image/*");
 
         startActivityForResult(photoPickerintent, IMAGE_GALLERY_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == IMAGE_GALLERY_REQUEST)
+        {
+            Dis
+        }
+    }
+
+    public void pickImage() {
+
     }
 
 }
