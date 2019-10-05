@@ -1,9 +1,11 @@
 package com.example.cropshot;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -16,11 +18,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import java.io.File;
+import java.io.*;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +61,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == IMAGE_GALLERY_REQUEST)
-        {
-            Dis
+        if(requestCode == IMAGE_GALLERY_REQUEST){
+            if (data != null) {
+                Uri contentURI = data.getData();
+                imageView.setImageURI(contentURI);
+
+            }
         }
     }
 
-    public void pickImage() {
-
-    }
 
 }
