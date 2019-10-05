@@ -23,10 +23,14 @@ import java.io.*;
 public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
+    // We need access to our image view
     ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // ------------ TEMPLATE CODE --------------
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -38,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        // ------------ TEMPLATE CODE --------------
+
+        // Get access to the Cropping image image view, and store it in a variable
+        imageView = (ImageView)findViewById(R.id.CroppingImg);
     }
 
     public void onGalleryClick(View v)
@@ -61,11 +70,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == IMAGE_GALLERY_REQUEST){
-            if (data != null) {
+        // Only preform operations if we know that our result has successfully happened
+        if(resultCode == RESULT_OK)
+        {
+            if(requestCode == IMAGE_GALLERY_REQUEST)
+            {
+                // Let's get the URI (or address) of the image our user has selected
                 Uri contentURI = data.getData();
-                imageView.setImageURI(contentURI);
 
+
+                // Set our imageView to the URI of the selected image from the gallery
+                imageView.setImageURI(contentURI);
             }
         }
     }
