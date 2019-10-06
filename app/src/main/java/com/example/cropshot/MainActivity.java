@@ -1,27 +1,36 @@
 package com.example.cropshot;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import java.io.File;
+import java.io.*;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
+    // We need access to our image view
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // ------------ TEMPLATE CODE --------------
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -33,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        // ------------ TEMPLATE CODE --------------
+
+        // Get access to the Cropping image image view, and store it in a variable
+        imageView = (ImageView)findViewById(R.id.CroppingImg);
     }
 
     public void onGalleryClick(View v)
@@ -53,5 +67,23 @@ public class MainActivity extends AppCompatActivity {
 
         startActivityForResult(photoPickerintent, IMAGE_GALLERY_REQUEST);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        // Only preform operations if we know that our result has successfully happened
+        if(resultCode == RESULT_OK)
+        {
+            if(requestCode == IMAGE_GALLERY_REQUEST)
+            {
+                // Let's get the URI (or address) of the image our user has selected
+                Uri contentURI = data.getData();
+
+
+                // Set our imageView to the URI of the selected image from the gallery
+                imageView.setImageURI(contentURI);
+            }
+        }
+    }
+
 
 }
