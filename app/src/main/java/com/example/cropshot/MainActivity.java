@@ -134,10 +134,7 @@ public class MainActivity extends AppCompatActivity {
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/saved_images");
         myDir.mkdirs();
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
+        String fname = image_name+".jpg";
         File file = new File(myDir, fname);
         if (file.exists())
             file.delete();
