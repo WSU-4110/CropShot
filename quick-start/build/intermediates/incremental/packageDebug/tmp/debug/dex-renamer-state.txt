@@ -1,0 +1,4 @@
+#Wed Oct 02 23:19:32 EDT 2019
+base.0=C\:\\Users\\Tyler\\Dropbox\\CSC 4110 - Software Engineering\\Project\\CropShot\\quick-start\\build\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
