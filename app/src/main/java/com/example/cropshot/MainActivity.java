@@ -27,10 +27,10 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
-    public static final int IMAGE_CROP_REQUEST = 21;
 
     // We need access to our image view
     ImageView imageView;
+    Uri contentURI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,21 +76,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCropClick(View v)
     {
-        // Invoke the image gallery using an implicit intent
-        Intent photoPickerintent = new Intent(Intent.ACTION_PICK);
+        try {
 
-        // Where do we want to find the data?
-        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
-        String pictureDirectoryPath = pictureDirectory.getPath();
+            // Send uri of image to get cropped
+            Bitmap bitmap = cropImage(getApplicationContext(), contentURI);
+            saveImage(bitmap, "IMG300");
 
-        // Finally, get a URI representation
-        Uri data = Uri.parse(pictureDirectoryPath);
+            imageView.setImageBitmap(bitmap);
 
-        // Set the data and type Get all images types
-        photoPickerintent.setDataAndType(data, "image/*");
 
-        startActivityForResult(photoPickerintent, IMAGE_CROP_REQUEST);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -102,30 +100,20 @@ public class MainActivity extends AppCompatActivity {
         {
             if(requestCode == IMAGE_GALLERY_REQUEST)
             {
-                // Let's get the URI (or address) of the image our user has selected
-                Uri contentURI = data.getData();
-
-                // Set our imageView to the URI of the selected image from the gallery
-                imageView.setImageURI(contentURI);
-                }
-            }
-
-            if(requestCode == IMAGE_CROP_REQUEST)
-            {
-                try {
+                try
+                {
                     // Let's get the URI (or address) of the image our user has selected
-                    Uri contentURI = data.getData();
+                    contentURI = data.getData();
 
-                    // Send uri of image to get cropped
-                    Bitmap bitmap = cropImage(getApplicationContext(), contentURI);
-                    saveImage(bitmap, "IMG300");
-
-
-                }catch (Exception e){
+                    // Set our imageView to the URI of the selected image from the gallery
+                    imageView.setImageURI(contentURI);
+                }catch(Exception e)
+                {
                     e.printStackTrace();
                 }
             }
         }
+    }
 
     public Bitmap cropImage(Context context, Uri userImage) throws Exception {
 
