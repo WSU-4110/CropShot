@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     Uri contentURI;
 
+    enum DIR {TOP, BOTTOM}
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -152,7 +154,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Checks the color of the left and right pixel
+    // Returns true if the pixels are in a similar range
+    // And false otherwise
+    boolean CheckColor(Color left, Color right)
+    {
+        return true;
+    }
 
+    // Takes the bitmap, and given a direction (Top or bottom)
+    // Scans for pixels that are identical on the same line
+    // In order to find the top/bottom of an image
+    int FindBorder(DIR direction)
+    {
+        return 0;
+    }
+
+    // Given a row of pixels in a bitmap, return true if all pixels
+    // Are the same color, otherwise return false.
+    boolean SolidRow(Bitmap row)
+    {
+        return true;
+    }
 
 
     }
