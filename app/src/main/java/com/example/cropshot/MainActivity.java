@@ -3,6 +3,7 @@ package com.example.cropshot;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.ColorSpace;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     // We need access to our image view
     ImageView imageView;
+    Bitmap bitMap;
     Uri contentURI;
 
     enum DIR {TOP, BOTTOM}
@@ -82,10 +84,10 @@ public class MainActivity extends AppCompatActivity {
 
 
             // Send uri of image to get cropped
-            Bitmap bitmap = cropImage(getApplicationContext(), contentURI);
-            saveImage(bitmap, "IMG300");
+            bitMap = cropImage(getApplicationContext(), contentURI);
+            saveImage(bitMap, "IMG300");
 
-            imageView.setImageBitmap(bitmap);
+            imageView.setImageBitmap(bitMap);
 
 
         }catch (Exception e){
@@ -167,6 +169,48 @@ public class MainActivity extends AppCompatActivity {
     // In order to find the top/bottom of an image
     int FindBorder(DIR direction)
     {
+        // Get the middle position of the bitmap
+        int middleY = bitMap.getHeight() / 2;
+
+        if(direction == DIR.TOP)
+        {
+            // Let's start with I at the middle of the image, and move up until we reach the top
+            for (int i = middleY; i < bitMap.getHeight(); i++)
+            {
+                // Get the color of the left pixel
+                Color leftColor;
+                //leftColor = bitMap.getPixel(0, i);
+                // Get the color of the right pixel
+                Color rightColor;
+                //rightColor = bitMap.getPixel(bitMap.getWidth() - 1, i)
+
+                // if the colors are the same we want to return our i value for the top
+                //if(CheckColor(leftColor, rightColor))
+                {
+                    return i;
+                }
+            }
+
+        }
+        else
+        {
+            // Let's start with I at the middle of the image, and move down until we reach the bottom
+            for (int i = middleY; i > 0; i--)
+            {
+                // Get the color of the left pixel
+                Color leftColor;
+                //leftColor = bitMap.getPixel(0, i);
+                // Get the color of the right pixel
+                Color rightColor;
+                //rightColor = bitMap.getPixel(bitMap.getWidth() - 1, i)
+
+                // if the colors are the same we want to return our i value for the top
+                //if(CheckColor(leftColor, rightColor))
+                {
+                    return i;
+                }
+            }
+        }
         return 0;
     }
 
