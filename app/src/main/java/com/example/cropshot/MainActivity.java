@@ -57,11 +57,10 @@ public class MainActivity extends AppCompatActivity {
         // ------------ TEMPLATE CODE --------------
 
         // Get access to the Cropping image image view, and store it in a variable
-        imageView = (ImageView)findViewById(R.id.CroppingImg);
+        imageView = (ImageView) findViewById(R.id.CroppingImg);
     }
 
-    public void onGalleryClick(View v)
-    {
+    public void onGalleryClick(View v) {
         // Invoke the image gallery using an implicit intent
         Intent photoPickerintent = new Intent(Intent.ACTION_PICK);
 
@@ -79,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(photoPickerintent, IMAGE_GALLERY_REQUEST);
     }
 
-    public void onCropClick(View v)
-    {
+    public void onCropClick(View v) {
         try {
 
 
@@ -93,32 +91,27 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+            System.out.println("FindBorder Function Output: " + FindBorder(DIR.TOP));
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // Only preform operations if we know that our result has successfully happened
-        if(resultCode == RESULT_OK)
-        {
-            if(requestCode == IMAGE_GALLERY_REQUEST)
-            {
-                try
-                {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_GALLERY_REQUEST) {
+                try {
                     // Let's get the URI (or address) of the image our user has selected
                     contentURI = data.getData();
 
                     // Set our imageView to the URI of the selected image from the gallery
                     imageView.setImageURI(contentURI);
-                }catch(Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -126,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public Bitmap cropImage(Context context, Uri userImage) throws Exception {
-
-
         //Convert uri image to bitmap
         Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
         Bitmap preCrop = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
@@ -148,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         Random generator = new Random();
         int n = 10000;
         n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
+        String fname = "Image-" + n + ".jpg";
         File file = new File(myDir, fname);
         Log.i("LOAD", root + fname);
         try {
@@ -164,53 +155,45 @@ public class MainActivity extends AppCompatActivity {
     // Checks the color of the left and right pixel
     // Returns true if the pixels are in a similar range
     // And false otherwise
-    boolean CheckColor(Color left, Color right)
-    {
-        return true;
-    }
+    boolean CheckColor(int left, int right){
+        //Debugging, logging color
+        System.out.println("R: " + Color.red(left) + " G: " + Color.green(left) + " B: " + Color.blue(left));
+        return (left  == right);
+       }
 
     // Takes the bitmap, and given a direction (Top or bottom)
     // Scans for pixels that are identical on the same line
     // In order to find the top/bottom of an image
-    int FindBorder(DIR direction)
-    {
+    int FindBorder(DIR direction) {
         // Get the middle position of the bitmap
         int middleY = bitMap.getHeight() / 2;
 
-        if(direction == DIR.TOP)
-        {
+        if (direction == DIR.TOP) {
             // Let's start with I at the middle of the image, and move up until we reach the top
             for (int i = middleY; i < bitMap.getHeight(); i++)
             {
-                // Get the color of the left pixel
-                Color leftColor;
-                //leftColor = bitMap.getPixel(0, i);
-                // Get the color of the right pixel
-                Color rightColor;
-                //rightColor = bitMap.getPixel(bitMap.getWidth() - 1, i)
 
-                // if the colors are the same we want to return our i value for the top
-                //if(CheckColor(leftColor, rightColor))
+                System.out.println("Scan Line Number: " + i);
+                System.out.println("Image Height: " + bitMap.getHeight());
+                // Generate the single rowed bitmap
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i + middleY, bitMap.getWidth(), i + middleY);
+
+                if(SolidRow(subMap))
                 {
-                    return i;
+                    return i + middleY;
                 }
             }
 
-        }
-        else
-        {
+        } else {
             // Let's start with I at the middle of the image, and move down until we reach the bottom
             for (int i = middleY; i > 0; i--)
             {
-                // Get the color of the left pixel
-                Color leftColor;
-                //leftColor = bitMap.getPixel(0, i);
-                // Get the color of the right pixel
-                Color rightColor;
-                //rightColor = bitMap.getPixel(bitMap.getWidth() - 1, i)
+
+                // Generate the single rowed bitmap
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), i);
 
                 // if the colors are the same we want to return our i value for the top
-                //if(CheckColor(leftColor, rightColor))
+                if(SolidRow(subMap))
                 {
                     return i;
                 }
@@ -223,11 +206,63 @@ public class MainActivity extends AppCompatActivity {
     // Are the same color, otherwise return false.
     boolean SolidRow(Bitmap row)
     {
-        return true;
+        //Getting length and height for the bitmap
+        int length = row.getWidth();
+        int height = row.getHeight();
+        int max = length - 1;
+
+        //Iterates through the bitmap row
+        for(int i = 0; i < length - 1; i++){
+
+
+            //Gets variables
+            int left_pixel = row.getPixel(i,height);
+            int right_pixel = row.getPixel(max,height);
+
+            //Gets the pixel colors for both pixels
+            int leftRed = Color.red(left_pixel);
+            int leftBlue = Color.blue(left_pixel);
+            int leftGreen = Color.green(left_pixel);
+
+            int rightRed = Color.red(right_pixel);
+            int rightBlue = Color.blue(right_pixel);
+            int rightGreen = Color.green(right_pixel);
+
+            //Checks if the pixels are the same color or if the pixels meet
+            if((CheckColor(left_pixel,right_pixel)) || (max <= i)){
+
+                //decrements the max value
+                max = max -1;
+            }
+
+            else{
+                return false;
+            }
+        }
+      return true;
     }
 
 
+    public Bitmap cropSolidRow(Bitmap bitmap, int cropHeight, DIR direction){
+        int bitmapWidth = bitmap.getWidth();
+
+
+        // Crop from solid row upward
+        if (direction == DIR.TOP){
+            int numOfRows = bitmap.getHeight() - cropHeight;
+
+            Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, cropHeight, bitmapWidth, numOfRows);
+            return newBitmap;
+        }
+
+        // Crop from solid row downward
+        //else if direction == DIR.BOTTOM
+        else {
+            // Height - number of rows to delete at end of picture
+            int numOfRows = bitmap.getHeight() - (bitmap.getHeight() - cropHeight);
+
+            Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmapWidth, numOfRows);
+            return newBitmap;
+        }
     }
-
-
-
+}
