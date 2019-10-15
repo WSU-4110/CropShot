@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     Bitmap bitMap;
     Uri contentURI;
+    Bitmap preCrop;
 
     enum DIR {TOP, BOTTOM}
 
@@ -83,9 +84,12 @@ public class MainActivity extends AppCompatActivity {
 
             // Send uri of image to get cropped
             bitMap = cropImage(getApplicationContext(), contentURI);
-            saveImage(bitMap, "IMG300");
-
+            setContentView(R.layout.activity_crop_save);
             imageView.setImageBitmap(bitMap);
+            saveImage(bitMap);
+
+
+
 
             System.out.println("FindBorder Function Output: " + FindBorder(DIR.TOP));
 
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 
 
     @Override
@@ -116,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
     public Bitmap cropImage(Context context, Uri userImage) throws Exception {
         //Convert uri image to bitmap
         Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
+        Bitmap preCrop = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
 
         //Crop out top 14 of height off image.
         Bitmap resizedBitmap1 = Bitmap.createBitmap(bitmap, 0, 120, bitmap.getWidth(), bitmap.getHeight() - 200);
@@ -124,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void saveImage(Bitmap finalBitmap, String image_name) {
+    private void saveImage(Bitmap finalBitmap) {
 
 
         String root = Environment.getExternalStorageDirectory().toString();
@@ -135,8 +141,6 @@ public class MainActivity extends AppCompatActivity {
         n = generator.nextInt(n);
         String fname = "Image-" + n + ".jpg";
         File file = new File(myDir, fname);
-        if (file.exists())
-            file.delete();
         Log.i("LOAD", root + fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
