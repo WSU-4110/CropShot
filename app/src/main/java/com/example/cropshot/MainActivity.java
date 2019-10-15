@@ -218,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
     // Are the same color, otherwise return false.
     boolean SolidRow(Bitmap row)
     {
-
         int length = row.getWidth();
         int height = row.getHeight();
         int max = length - 1;
@@ -247,8 +246,6 @@ public class MainActivity extends AppCompatActivity {
                 check = false;
                 break;
             }
-
-
         }
 
         if(check == false)
@@ -256,7 +253,6 @@ public class MainActivity extends AppCompatActivity {
         else
             return true;
     }
-
 
     }
 
