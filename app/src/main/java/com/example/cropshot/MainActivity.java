@@ -177,17 +177,13 @@ public class MainActivity extends AppCompatActivity {
             // Let's start with I at the middle of the image, and move up until we reach the top
             for (int i = middleY; i < bitMap.getHeight(); i++)
             {
-                // Get the color of the left pixel
-                Color leftColor;
-                //leftColor = bitMap.getPixel(0, i);
-                // Get the color of the right pixel
-                Color rightColor;
-                //rightColor = bitMap.getPixel(bitMap.getWidth() - 1, i)
 
-                // if the colors are the same we want to return our i value for the top
-                //if(CheckColor(leftColor, rightColor))
+                // Generate the single rowed bitmap
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i + middleY, bitMap.getWidth(), i + middleY);
+
+                if(SolidRow(subMap))
                 {
-                    return i;
+                    return i + middleY;
                 }
             }
 
@@ -197,15 +193,12 @@ public class MainActivity extends AppCompatActivity {
             // Let's start with I at the middle of the image, and move down until we reach the bottom
             for (int i = middleY; i > 0; i--)
             {
-                // Get the color of the left pixel
-                Color leftColor;
-                //leftColor = bitMap.getPixel(0, i);
-                // Get the color of the right pixel
-                Color rightColor;
-                //rightColor = bitMap.getPixel(bitMap.getWidth() - 1, i)
+
+                // Generate the single rowed bitmap
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), i);
 
                 // if the colors are the same we want to return our i value for the top
-                //if(CheckColor(leftColor, rightColor))
+                if(SolidRow(subMap))
                 {
                     return i;
                 }
