@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     // Checks the color of the left and right pixel
     // Returns true if the pixels are in a similar range
     // And false otherwise
-    boolean CheckColor(Color left, Color right)
+    boolean CheckColor(int left, int right)
     {
         return true;
     }
@@ -211,9 +211,43 @@ public class MainActivity extends AppCompatActivity {
     // Are the same color, otherwise return false.
     boolean SolidRow(Bitmap row)
     {
-        return true;
-    }
+        //Getting length and height for the bitmap
+        int length = row.getWidth();
+        int height = row.getHeight();
+        int max = length - 1;
 
+        //Iterates through the bitmap row
+        for(int i = 0; i < length - 1; i++){
+
+
+            //Gets variables
+            int left_pixel = row.getPixel(i,height);
+            int right_pixel = row.getPixel(max,height);
+
+            //Gets the pixel colors for both pixels
+            int leftRed = Color.red(left_pixel);
+            int leftBlue = Color.blue(left_pixel);
+            int leftGreen = Color.green(left_pixel);
+
+            int rightRed = Color.red(right_pixel);
+            int rightBlue = Color.blue(right_pixel);
+            int rightGreen = Color.green(right_pixel);
+
+            //Checks if the pixels are the same color or if the pixels meet
+            if((CheckColor(left_pixel,right_pixel)) || (max <= i)){
+
+                //decrements the max value
+                max = max -1;
+            }
+
+            else{
+                return false;
+            }
+        }
+
+        return true;
+
+    }
 
     }
 
