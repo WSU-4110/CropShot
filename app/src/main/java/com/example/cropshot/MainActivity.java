@@ -232,9 +232,9 @@ public class MainActivity extends AppCompatActivity {
             int leftBlue = Color.blue(left_pixel);
             int leftGreen = Color.green(left_pixel);
 
-            int rightRed = Color.red(left_pixel);
-            int rightBlue = Color.blue(left_pixel);
-            int rightGreen = Color.green(left_pixel);
+            int rightRed = Color.red(right_pixel);
+            int rightBlue = Color.blue(right_pixel);
+            int rightGreen = Color.green(right_pixel);
 
             if((leftRed == rightRed) && (leftBlue == rightBlue) && (leftGreen == rightGreen)){
 
