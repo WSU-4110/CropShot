@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         int length = row.getWidth();
         int height = row.getHeight();
         int max = length - 1;
-        int check = 0;
+        boolean check = false;
 
         for(int i = 0; i < length; i++){
 
@@ -240,11 +240,11 @@ public class MainActivity extends AppCompatActivity {
             if((leftRed == rightRed) && (leftBlue == rightBlue) && (leftGreen == rightGreen)){
 
                 max = max -1;
-                check = 1;
+                check = true;
             }
 
             else{
-                check = 0;
+                check = false;
                 break;
             }
 
