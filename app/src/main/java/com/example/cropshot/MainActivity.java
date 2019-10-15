@@ -166,35 +166,30 @@ public class MainActivity extends AppCompatActivity {
 
         if (direction == DIR.TOP) {
             // Let's start with I at the middle of the image, and move up until we reach the top
-            for (int i = middleY; i < bitMap.getHeight(); i++) {
+            for (int i = middleY; i < bitMap.getHeight(); i++)
+            {
+
                 System.out.println("Scan Line Number: " + i);
                 System.out.println("Image Height: " + bitMap.getHeight());
+                // Generate the single rowed bitmap
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i + middleY, bitMap.getWidth(), i + middleY);
 
-                // Get the left pixel stored in a variable
-                int leftPixel = bitMap.getPixel(0, i);
-
-                // Get the right pixel stored in a variable
-                int rightPixel = bitMap.getPixel(bitMap.getWidth() - 1, i);
-
-                // if the colors are the same we want to return our i value for the top
-                if(CheckColor(leftPixel, rightPixel))
+                if(SolidRow(subMap))
                 {
-                    return i;
+                    return i + middleY;
                 }
             }
 
         } else {
             // Let's start with I at the middle of the image, and move down until we reach the bottom
-            for (int i = middleY; i > 0; i--) {
-                // Get the color of the left pixel
-                Color leftColor;
-                //leftColor = bitMap.getPixel(0, i);
-                // Get the color of the right pixel
-                Color rightColor;
-                //rightColor = bitMap.getPixel(bitMap.getWidth() - 1, i)
+            for (int i = middleY; i > 0; i--)
+            {
+
+                // Generate the single rowed bitmap
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), i);
 
                 // if the colors are the same we want to return our i value for the top
-                //if(CheckColor(leftColor, rightColor))
+                if(SolidRow(subMap))
                 {
                     return i;
                 }
@@ -205,12 +200,48 @@ public class MainActivity extends AppCompatActivity {
 
     // Given a row of pixels in a bitmap, return true if all pixels
     // Are the same color, otherwise return false.
-    boolean SolidRow(Bitmap row) {
-        return true;
+    boolean SolidRow(Bitmap row)
+    {
+        //Getting length and height for the bitmap
+        int length = row.getWidth();
+        int height = row.getHeight();
+        int max = length - 1;
+
+        //Iterates through the bitmap row
+        for(int i = 0; i < length - 1; i++){
+
+
+            //Gets variables
+            int left_pixel = row.getPixel(i,height);
+            int right_pixel = row.getPixel(max,height);
+
+            //Gets the pixel colors for both pixels
+            int leftRed = Color.red(left_pixel);
+            int leftBlue = Color.blue(left_pixel);
+            int leftGreen = Color.green(left_pixel);
+
+            int rightRed = Color.red(right_pixel);
+            int rightBlue = Color.blue(right_pixel);
+            int rightGreen = Color.green(right_pixel);
+
+            //Checks if the pixels are the same color or if the pixels meet
+            if((CheckColor(left_pixel,right_pixel)) || (max <= i)){
+
+                //decrements the max value
+                max = max -1;
+            }
+
+            else{
+                return false;
+            }
+        }
+      return true;
     }
+
 
     public Bitmap cropSolidRow(Bitmap bitmap, int cropHeight, DIR direction){
         int bitmapWidth = bitmap.getWidth();
+
 
         // Crop from solid row upward
         if (direction == DIR.TOP){
