@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        if(check == 0)
+        if(check == false)
             return false;
         else
             return true;
