@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     // Checks the color of the left and right pixel
     // Returns true if the pixels are in a similar range
     // And false otherwise
-    boolean CheckColor(Color left, Color right)
+    boolean CheckColor(int left, int right)
     {
         return true;
     }
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
             int rightGreen = Color.green(right_pixel);
 
             //Checks if the pixels are the same color or if the pixels meet
-            if((leftRed == rightRed) && (leftBlue == rightBlue) && (leftGreen == rightGreen) || (max <= i)){
+            if((CheckColor(left_pixel,right_pixel)) || (max <= i)){
 
                 //decrements the max value
                 max = max -1;
