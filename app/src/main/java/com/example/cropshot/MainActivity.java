@@ -172,11 +172,11 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Scan Line Number: " + i);
                 System.out.println("Image Height: " + bitMap.getHeight());
                 // Generate the single rowed bitmap
-                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i + middleY, bitMap.getWidth(), i + middleY);
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
 
                 if(SolidRow(subMap))
                 {
-                    return i + middleY;
+                    return i;
                 }
             }
 
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             {
 
                 // Generate the single rowed bitmap
-                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), i);
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
 
                 // if the colors are the same we want to return our i value for the top
                 if(SolidRow(subMap))
