@@ -80,9 +80,9 @@ public class MainActivity extends AppCompatActivity {
     public void onCropClick(View v) {
         try {
 
-
-            // Send uri of image to get cropped
-            bitMap = cropImage(getApplicationContext(), contentURI);
+            //Convert uri image to bitmap
+            bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+            
             saveImage(bitMap, "IMG300");
 
             imageView.setImageBitmap(bitMap);
@@ -111,17 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public Bitmap cropImage(Context context, Uri userImage) throws Exception {
-        //Convert uri image to bitmap
-        Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
-
-        //Crop out top 14 of height off image.
-        Bitmap resizedBitmap1 = Bitmap.createBitmap(bitmap, 0, 120, bitmap.getWidth(), bitmap.getHeight() - 200);
-
-        return resizedBitmap1;
-
     }
 
     private void saveImage(Bitmap finalBitmap, String image_name) {
