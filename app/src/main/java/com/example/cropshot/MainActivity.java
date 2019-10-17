@@ -82,10 +82,15 @@ public class MainActivity extends AppCompatActivity {
 
             //Convert uri image to bitmap
             bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+
+            // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
+            int topCropInt = FindBorder(DIR.TOP);
+            int bottomCropInt = FindBorder(DIR.BOTTOM);
+            Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, bottomCropInt, bitMap.getWidth(), topCropInt - bottomCropInt);
             
             saveImage(bitMap, "IMG300");
 
-            imageView.setImageBitmap(bitMap);
+            imageView.setImageBitmap(croppedMap);
 
             System.out.println("FindBorder Function Output: " + FindBorder(DIR.TOP));
 
@@ -203,15 +208,6 @@ public class MainActivity extends AppCompatActivity {
             //Gets variables
             int left_pixel = row.getPixel(i,height);
             int right_pixel = row.getPixel(max,height);
-
-            //Gets the pixel colors for both pixels
-            int leftRed = Color.red(left_pixel);
-            int leftBlue = Color.blue(left_pixel);
-            int leftGreen = Color.green(left_pixel);
-
-            int rightRed = Color.red(right_pixel);
-            int rightBlue = Color.blue(right_pixel);
-            int rightGreen = Color.green(right_pixel);
 
             //Checks if the pixels are the same color or if the pixels meet
             if((CheckColor(left_pixel,right_pixel)) || (max <= i)){
