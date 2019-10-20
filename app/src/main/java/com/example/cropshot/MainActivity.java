@@ -86,13 +86,14 @@ public class MainActivity extends AppCompatActivity {
             // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
             int topCropInt = FindBorder(DIR.TOP);
             int bottomCropInt = FindBorder(DIR.BOTTOM);
+
+            System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt);
+
             Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, bottomCropInt, bitMap.getWidth(), topCropInt - bottomCropInt);
             
             saveImage(bitMap, "IMG300");
 
             imageView.setImageBitmap(croppedMap);
-
-            System.out.println("FindBorder Function Output: " + FindBorder(DIR.TOP));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,8 +147,6 @@ public class MainActivity extends AppCompatActivity {
     // Returns true if the pixels are in a similar range
     // And false otherwise
     boolean CheckColor(int left, int right){
-        //Debugging, logging color
-        System.out.println("R: " + Color.red(left) + " G: " + Color.green(left) + " B: " + Color.blue(left));
         return (left  == right);
        }
 
@@ -163,8 +162,6 @@ public class MainActivity extends AppCompatActivity {
             for (int i = middleY; i < bitMap.getHeight(); i++)
             {
 
-                System.out.println("Scan Line Number: " + i);
-                System.out.println("Image Height: " + bitMap.getHeight());
                 // Generate the single rowed bitmap
                 Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
 
@@ -206,8 +203,8 @@ public class MainActivity extends AppCompatActivity {
 
 
             //Gets variables
-            int left_pixel = row.getPixel(i,height);
-            int right_pixel = row.getPixel(max,height);
+            int left_pixel = row.getPixel(i,height - 1);
+            int right_pixel = row.getPixel(max,height - 1);
 
             //Checks if the pixels are the same color or if the pixels meet
             if((CheckColor(left_pixel,right_pixel)) || (max <= i)){
