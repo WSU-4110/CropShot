@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     Bitmap bitMap;
     Uri contentURI;
+    Bitmap preCrop;
 
     enum DIR {TOP, BOTTOM}
 
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // Only preform operations if we know that our result has successfully happened
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private void saveImage(Bitmap finalBitmap, String image_name) {
 
 
@@ -135,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
         n = generator.nextInt(n);
         String fname = "Image-" + n + ".jpg";
         File file = new File(myDir, fname);
-        if (file.exists())
-            file.delete();
         Log.i("LOAD", root + fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
