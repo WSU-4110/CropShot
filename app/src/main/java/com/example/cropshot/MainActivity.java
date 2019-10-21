@@ -80,14 +80,25 @@ public class MainActivity extends AppCompatActivity {
     public void onCropClick(View v) {
         try {
 
+            //Convert uri image to bitmap
+            bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
 
-            // Send uri of image to get cropped
-            bitMap = cropImage(getApplicationContext(), contentURI);
-            saveImage(bitMap, "IMG300");
+            // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
+            int topCropInt = FindBorder(DIR.TOP);
+            int bottomCropInt = FindBorder(DIR.BOTTOM);
 
-            imageView.setImageBitmap(bitMap);
+            bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
-            System.out.println("FindBorder Function Output: " + FindBorder(DIR.TOP));
+
+            System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
+
+            // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
+            // Lower bounded value
+            Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
+
+            //saveImage(bitMap, "IMG300");
+
+            imageView.setImageBitmap(croppedMap);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,17 +122,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public Bitmap cropImage(Context context, Uri userImage) throws Exception {
-        //Convert uri image to bitmap
-        Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
-
-        //Crop out top 14 of height off image.
-        Bitmap resizedBitmap1 = Bitmap.createBitmap(bitmap, 0, 120, bitmap.getWidth(), bitmap.getHeight() - 200);
-
-        return resizedBitmap1;
-
     }
 
     private void saveImage(Bitmap finalBitmap, String image_name) {
@@ -152,8 +152,6 @@ public class MainActivity extends AppCompatActivity {
     // Returns true if the pixels are in a similar range
     // And false otherwise
     boolean CheckColor(int left, int right){
-        //Debugging, logging color
-        System.out.println("R: " + Color.red(left) + " G: " + Color.green(left) + " B: " + Color.blue(left));
         return (left  == right);
        }
 
@@ -164,29 +162,27 @@ public class MainActivity extends AppCompatActivity {
         // Get the middle position of the bitmap
         int middleY = bitMap.getHeight() / 2;
 
-        if (direction == DIR.TOP) {
-            // Let's start with I at the middle of the image, and move up until we reach the top
+        if (direction == DIR.BOTTOM) {
+            // Let's start with I at the middle of the image, and move positively until we reach the bottom
             for (int i = middleY; i < bitMap.getHeight(); i++)
             {
 
-                System.out.println("Scan Line Number: " + i);
-                System.out.println("Image Height: " + bitMap.getHeight());
                 // Generate the single rowed bitmap
-                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i + middleY, bitMap.getWidth(), i + middleY);
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
 
                 if(SolidRow(subMap))
                 {
-                    return i + middleY;
+                    return i;
                 }
             }
 
         } else {
-            // Let's start with I at the middle of the image, and move down until we reach the bottom
+            // Let's start with I at the middle of the image, and move negatively until we reach the top
             for (int i = middleY; i > 0; i--)
             {
 
                 // Generate the single rowed bitmap
-                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), i);
+                Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
 
                 // if the colors are the same we want to return our i value for the top
                 if(SolidRow(subMap))
@@ -198,6 +194,10 @@ public class MainActivity extends AppCompatActivity {
         return 0;
     }
 
+    // NOTE: This doesn't actually check if all the pixels are the same!
+    // It only checks if the pixels across from eachother are, i.e.
+    // (left, right), (left + 1, right - 1)
+
     // Given a row of pixels in a bitmap, return true if all pixels
     // Are the same color, otherwise return false.
     boolean SolidRow(Bitmap row)
@@ -208,27 +208,18 @@ public class MainActivity extends AppCompatActivity {
         int max = length - 1;
 
         //Iterates through the bitmap row
-        for(int i = 0; i < length - 1; i++){
+        for(int i = 0; i < (length - 1) / 2; i++){
 
 
             //Gets variables
-            int left_pixel = row.getPixel(i,height);
-            int right_pixel = row.getPixel(max,height);
-
-            //Gets the pixel colors for both pixels
-            int leftRed = Color.red(left_pixel);
-            int leftBlue = Color.blue(left_pixel);
-            int leftGreen = Color.green(left_pixel);
-
-            int rightRed = Color.red(right_pixel);
-            int rightBlue = Color.blue(right_pixel);
-            int rightGreen = Color.green(right_pixel);
+            int left_pixel = row.getPixel(i,height - 1);
+            int right_pixel = row.getPixel(max,height - 1);
 
             //Checks if the pixels are the same color or if the pixels meet
-            if((CheckColor(left_pixel,right_pixel)) || (max <= i)){
+            if(CheckColor(left_pixel,right_pixel)){
 
                 //decrements the max value
-                max = max -1;
+                max = max - 1;
             }
 
             else{
