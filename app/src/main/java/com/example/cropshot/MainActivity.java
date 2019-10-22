@@ -60,6 +60,18 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.CroppingImg);
     }
 
+    public Bitmap cropImage(Context context, Uri userImage) throws Exception {
+        //Convert uri image to bitmap
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
+        Bitmap preCrop = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
+
+        //Crop out top 14 of height off image.
+        Bitmap resizedBitmap1 = Bitmap.createBitmap(bitmap, 0, 120, bitmap.getWidth(), bitmap.getHeight() - 200);
+
+        return resizedBitmap1;
+
+    }
+
     public void onGalleryClick(View v) {
         // Invoke the image gallery using an implicit intent
         Intent photoPickerintent = new Intent(Intent.ACTION_PICK);
@@ -84,9 +96,11 @@ public class MainActivity extends AppCompatActivity {
             //Convert uri image to bitmap
             bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
 
+
             // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
             int topCropInt = FindBorder(DIR.TOP);
             int bottomCropInt = FindBorder(DIR.BOTTOM);
+
 
             bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
@@ -102,6 +116,29 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageBitmap(croppedMap);
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onDiscardClick(View v)
+    {
+       try {
+           //revert to original display and remove original
+           setContentView(R.layout.activity_main);
+           imageView.setImageBitmap(preCrop);
+       }
+       catch(Exception e) {
+           e.printStackTrace();
+       }
+    }
+
+    public void onSaveNewClick (View v)
+    {
+        try {
+            //creates new file
+            saveImage(bitMap);
+        }
+        catch(Exception e) {
             e.printStackTrace();
         }
     }
@@ -127,6 +164,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+    private void overwriteImage(Bitmap finalBitmap) {
+
+    }
+
+
     private void saveImage(Bitmap finalBitmap, String image_name) {
 
 
@@ -138,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
         n = generator.nextInt(n);
         String fname = "Image-" + n + ".jpg";
         File file = new File(myDir, fname);
+        while (file.exists()) {
+            fname = fname+1;
+        }
         Log.i("LOAD", root + fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
