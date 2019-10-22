@@ -159,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (diff < 10 && diff > -10) {
-            System.out.println("Difference: " + diff);
             return true;
         }
         else
@@ -230,14 +229,10 @@ public class MainActivity extends AppCompatActivity {
             int right_pixel = row.getPixel(i, height - 1);
 
             //Checks if the pixels are the same color or if the pixels meet
-            if (CheckColor(left_pixel, right_pixel)) {
-                //decrements the max value
-                max = max - 1;
-            } else {
+            if (!CheckColor(left_pixel, right_pixel)) {
                 return false;
             }
         }
-
       return true;
     }
 
