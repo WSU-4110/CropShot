@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.graphics.Color;
 
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.util.Log;
 
@@ -199,7 +200,16 @@ public class MainActivity extends AppCompatActivity {
     // Returns true if the pixels are in a similar range
     // And false otherwise
     boolean CheckColor(int left, int right){
-        return (left  == right);
+        int leftSum = Color.red(left) + Color.green(left) + Color.blue(left);
+        int rightSum = Color.red(right) + Color.green(right) + Color.blue(right);
+        int diff = leftSum - rightSum;
+
+
+        if (diff < 10 && diff > -10) {
+            return true;
+        }
+        else
+            return false;
        }
 
     // Takes the bitmap, and given a direction (Top or bottom)
@@ -216,13 +226,15 @@ public class MainActivity extends AppCompatActivity {
 
                 // Generate the single rowed bitmap
                 Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
+                int pixel = subMap.getPixel(0,0);
 
-                if(SolidRow(subMap))
+                if(SolidRow(subMap) && Color.red(pixel) == Color.blue(pixel) && Color.red(pixel) == Color.green(pixel))
                 {
                     return i;
                 }
             }
 
+            //DIR == TOP
         } else {
             // Let's start with I at the middle of the image, and move negatively until we reach the top
             for (int i = middleY; i > 0; i--)
@@ -230,8 +242,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // Generate the single rowed bitmap
                 Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
+                int pixel = subMap.getPixel(0,0);
 
                 // if the colors are the same we want to return our i value for the top
+                // Also if the color is white (255,255,255), as that designates top of image.
                 if(SolidRow(subMap))
                 {
                     return i;
@@ -253,23 +267,16 @@ public class MainActivity extends AppCompatActivity {
         int length = row.getWidth();
         int height = row.getHeight();
         int max = length - 1;
+        int pixel = row.getPixel(0,0);
 
         //Iterates through the bitmap row
-        for(int i = 0; i < (length - 1) / 2; i++){
-
-
+        for(int i = 1; i < (length - 1); i++) {
             //Gets variables
-            int left_pixel = row.getPixel(i,height - 1);
-            int right_pixel = row.getPixel(max,height - 1);
+            int left_pixel = row.getPixel(0, height - 1);
+            int right_pixel = row.getPixel(i, height - 1);
 
             //Checks if the pixels are the same color or if the pixels meet
-            if(CheckColor(left_pixel,right_pixel)){
-
-                //decrements the max value
-                max = max - 1;
-            }
-
-            else{
+            if (!CheckColor(left_pixel, right_pixel)) {
                 return false;
             }
         }
