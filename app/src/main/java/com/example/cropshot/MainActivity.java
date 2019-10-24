@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void saveImage(Bitmap finalBitmap, String image_name) {
+    private void saveImage(Bitmap finalBitmap) {
 
 
         String root = Environment.getExternalStorageDirectory().toString();
