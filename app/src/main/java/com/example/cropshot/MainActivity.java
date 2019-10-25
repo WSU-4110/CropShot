@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.graphics.Color;
 
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.util.Log;
 
@@ -60,6 +61,18 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.CroppingImg);
     }
 
+    public Bitmap cropImage(Context context, Uri userImage) throws Exception {
+        //Convert uri image to bitmap
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
+        Bitmap preCrop = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
+
+        //Crop out top 14 of height off image.
+        Bitmap resizedBitmap1 = Bitmap.createBitmap(bitmap, 0, 120, bitmap.getWidth(), bitmap.getHeight() - 200);
+
+        return resizedBitmap1;
+
+    }
+
     public void onGalleryClick(View v) {
         // Invoke the image gallery using an implicit intent
         Intent photoPickerintent = new Intent(Intent.ACTION_PICK);
@@ -84,9 +97,11 @@ public class MainActivity extends AppCompatActivity {
             //Convert uri image to bitmap
             bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
 
+
             // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
             int topCropInt = FindBorder(DIR.TOP);
             int bottomCropInt = FindBorder(DIR.BOTTOM);
+
 
             bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
@@ -102,6 +117,29 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageBitmap(croppedMap);
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onDiscardClick(View v)
+    {
+       try {
+           //revert to original display and remove original
+           setContentView(R.layout.activity_main);
+           imageView.setImageBitmap(preCrop);
+       }
+       catch(Exception e) {
+           e.printStackTrace();
+       }
+    }
+
+    public void onSaveNewClick (View v)
+    {
+        try {
+            //creates new file
+            saveImage(bitMap);
+        }
+        catch(Exception e) {
             e.printStackTrace();
         }
     }
@@ -127,7 +165,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void saveImage(Bitmap finalBitmap, String image_name) {
+
+    private void overwriteImage(Bitmap finalBitmap) {
+
+    }
+
+
+    private void saveImage(Bitmap finalBitmap) {
 
 
         String root = Environment.getExternalStorageDirectory().toString();
@@ -138,6 +182,9 @@ public class MainActivity extends AppCompatActivity {
         n = generator.nextInt(n);
         String fname = "Image-" + n + ".jpg";
         File file = new File(myDir, fname);
+        while (file.exists()) {
+            fname = fname+1;
+        }
         Log.i("LOAD", root + fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
@@ -153,7 +200,16 @@ public class MainActivity extends AppCompatActivity {
     // Returns true if the pixels are in a similar range
     // And false otherwise
     boolean CheckColor(int left, int right){
-        return (left  == right);
+        int leftSum = Color.red(left) + Color.green(left) + Color.blue(left);
+        int rightSum = Color.red(right) + Color.green(right) + Color.blue(right);
+        int diff = leftSum - rightSum;
+
+
+        if (diff < 10 && diff > -10) {
+            return true;
+        }
+        else
+            return false;
        }
 
     // Takes the bitmap, and given a direction (Top or bottom)
@@ -170,13 +226,15 @@ public class MainActivity extends AppCompatActivity {
 
                 // Generate the single rowed bitmap
                 Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
+                int pixel = subMap.getPixel(0,0);
 
-                if(SolidRow(subMap))
+                if(SolidRow(subMap) && Color.red(pixel) == Color.blue(pixel) && Color.red(pixel) == Color.green(pixel))
                 {
                     return i;
                 }
             }
 
+            //DIR == TOP
         } else {
             // Let's start with I at the middle of the image, and move negatively until we reach the top
             for (int i = middleY; i > 0; i--)
@@ -184,8 +242,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // Generate the single rowed bitmap
                 Bitmap subMap = Bitmap.createBitmap(bitMap, 0, i, bitMap.getWidth(), 1);
+                int pixel = subMap.getPixel(0,0);
 
                 // if the colors are the same we want to return our i value for the top
+                // Also if the color is white (255,255,255), as that designates top of image.
                 if(SolidRow(subMap))
                 {
                     return i;
@@ -207,23 +267,16 @@ public class MainActivity extends AppCompatActivity {
         int length = row.getWidth();
         int height = row.getHeight();
         int max = length - 1;
+        int pixel = row.getPixel(0,0);
 
         //Iterates through the bitmap row
-        for(int i = 0; i < (length - 1) / 2; i++){
-
-
+        for(int i = 1; i < (length - 1); i++) {
             //Gets variables
-            int left_pixel = row.getPixel(i,height - 1);
-            int right_pixel = row.getPixel(max,height - 1);
+            int left_pixel = row.getPixel(0, height - 1);
+            int right_pixel = row.getPixel(i, height - 1);
 
             //Checks if the pixels are the same color or if the pixels meet
-            if(CheckColor(left_pixel,right_pixel)){
-
-                //decrements the max value
-                max = max - 1;
-            }
-
-            else{
+            if (!CheckColor(left_pixel, right_pixel)) {
                 return false;
             }
         }
