@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
             //Convert uri image to bitmap
             bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
-            
+
             System.out.println("Cropping");
 
             if(!IsInstagramPhoto())
@@ -209,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
         // Gray pixel. If we find it, let's consider that image an instagram image
         for (int i = 0; i <= bitMap.getHeight()/2; i++)
         {
-            if(CheckColor(bitMap.getPixel(0, i), Color.parseColor("#e3e3e3")))
+            // System.out.println("left color: " + bitMap.getPixel(bitMap.getWidth() / 2, i) + "  Right color: " + Color.parseColor("#e3e3e3"));
+            if(CheckColor(bitMap.getPixel(bitMap.getWidth() / 2, i), Color.parseColor("#e3e3e3")))
                 return true;
         }
         return false;
