@@ -84,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
             //Convert uri image to bitmap
             bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
 
+            System.out.println("Cropping");
+
+            if(!IsInstagramPhoto())
+                return;
+
+            System.out.println("Identified an instagram photo");
+
             // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
             int topCropInt = FindBorder(DIR.TOP);
             int bottomCropInt = FindBorder(DIR.BOTTOM);
@@ -91,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
 
-            System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
+            // System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
 
             // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
             // Lower bounded value
@@ -147,6 +154,19 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Returns true if the image has features of an android studio image
+    boolean IsInstagramPhoto()
+    {
+        // Starting from the top of the image, going down, look for the color of the
+        // Gray pixel. If we find it, let's consider that image an instagram image
+        for (int i = 0; i <= bitMap.getHeight()/2; i++)
+        {
+            if(CheckColor(bitMap.getPixel(0, i), Color.parseColor("#e3e3e3")))
+                return true;
+        }
+        return false;
     }
 
     // Checks the color of the left and right pixel
@@ -215,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
             //Gets variables
             int left_pixel = row.getPixel(i,height - 1);
             int right_pixel = row.getPixel(max,height - 1);
+
 
             //Checks if the pixels are the same color or if the pixels meet
             if(CheckColor(left_pixel,right_pixel)){
