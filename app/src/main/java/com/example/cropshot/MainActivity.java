@@ -1,6 +1,8 @@
 package com.example.cropshot;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ColorSpace;
@@ -17,6 +19,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     Bitmap preCrop;
 
     enum DIR {TOP, BOTTOM}
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +64,6 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.CroppingImg);
     }
 
-    public Bitmap cropImage(Context context, Uri userImage) throws Exception {
-        //Convert uri image to bitmap
-        Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
-        Bitmap preCrop = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
-
-        //Crop out top 14 of height off image.
-        Bitmap resizedBitmap1 = Bitmap.createBitmap(bitmap, 0, 120, bitmap.getWidth(), bitmap.getHeight() - 200);
-
-        return resizedBitmap1;
-
-    }
 
     public void onGalleryClick(View v) {
         // Invoke the image gallery using an implicit intent
@@ -92,9 +85,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCropClick(View v) {
         try {
-
+            setContentView(R.layout.activity_crop_save);
             //Convert uri image to bitmap
             bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+            preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
 
 
             // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
@@ -113,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
             //saveImage(bitMap, "IMG300");
 
+
             imageView.setImageBitmap(croppedMap);
 
         } catch (Exception e) {
@@ -122,14 +117,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDiscardClick(View v)
     {
-       try {
-           //revert to original display and remove original
-           setContentView(R.layout.activity_main);
-           imageView.setImageBitmap(preCrop);
-       }
-       catch(Exception e) {
-           e.printStackTrace();
-       }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(true);
+            builder.setTitle("Are You Sure?");
+            builder.setMessage("Do you want to discard?");
+            builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    try {
+                        //revert to original display and remove original
+                        setContentView(R.layout.activity_main);
+                        imageView.setImageBitmap(preCrop);
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
     }
 
     public void onSaveNewClick (View v)
@@ -165,12 +178,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void overwriteImage(Bitmap finalBitmap) {
-
-    }
 
 
-    private void saveImage(Bitmap finalBitmap, String image_name) {
+
+    private void saveImage(Bitmap finalBitmap) {
 
 
         String root = Environment.getExternalStorageDirectory().toString();
