@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
 
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
 
+    private Button button;
+
     // We need access to our image view
     ImageView imageView;
     Bitmap bitMap;
@@ -45,6 +48,15 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        button = (Button) findViewById(R.id.mcrop);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openManualCrop();
+            }
+        });
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -305,5 +317,10 @@ public class MainActivity extends AppCompatActivity {
             Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmapWidth, numOfRows);
             return newBitmap;
         }
+    }
+
+    public void openManualCrop(){
+        Intent intent = new Intent(this,ManualCrop.class);
+        startActivity(intent);
     }
 }
