@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "163113283731",
+    "firebase_url": "https://cropshot-3e9f1.firebaseio.com",
+    "project_id": "cropshot-3e9f1",
+    "storage_bucket": "cropshot-3e9f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163113283731:android:6b13966a36f4a64d815d66",
+        "android_client_info": {
+          "package_name": "com.example.cropshot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "163113283731-rv7jspq5hpmes2ri0k9tdvf3j590m08e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOFMtBjQMYg64M6rppeoWmqLtS87o8KZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "163113283731-rv7jspq5hpmes2ri0k9tdvf3j590m08e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

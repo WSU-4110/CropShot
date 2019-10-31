@@ -14,6 +14,8 @@ import android.graphics.Color;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -326,5 +328,10 @@ public class MainActivity extends AppCompatActivity {
             Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmapWidth, numOfRows);
             return newBitmap;
         }
+    }
+
+    private void RunTextDetection()
+    {
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitMap);
     }
 }
