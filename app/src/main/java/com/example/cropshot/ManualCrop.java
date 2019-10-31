@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -55,6 +56,15 @@ public class ManualCrop extends AppCompatActivity {
                 ,0);
             }else{
                 startCrop(imageuri);
+            }
+        }
+
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode == RESULT_OK){
+                imageView.setImageURI(result.getUri());
+                Toast.makeText(this,"Image Updated"
+                ,Toast.LENGTH_SHORT).show();
             }
         }
     }
