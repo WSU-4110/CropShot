@@ -13,11 +13,17 @@ import android.widget.ImageView;
 import android.graphics.Color;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -102,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Cropping");
 
             if(!IsInstagramPhoto())
-                return;
+                //return;
 
             System.out.println("Identified an instagram photo");
 
@@ -110,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
             int topCropInt = FindBorder(DIR.TOP);
             int bottomCropInt = FindBorder(DIR.BOTTOM);
 
+            /*
 
             bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
@@ -120,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
             // Lower bounded value
             Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
 
+            */
+
+            Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
+
+            RunTextDetection(croppedMap);
             //saveImage(bitMap, "IMG300");
 
             imageView.setImageBitmap(croppedMap);
@@ -330,8 +342,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void RunTextDetection()
+    private void RunTextDetection(Bitmap croppedMap)
     {
-        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitMap);
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(croppedMap);
+        FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+        detector.processImage(image).addOnSuccessListener(
+                new OnSuccessListener<FirebaseVisionText>() {
+                    @Override
+                    public void onSuccess(FirebaseVisionText texts) {
+                        System.out.println("Succeeded process image!");
+                        ProcessTextRecognitionResults(texts);
+
+                    }
+                }
+
+        ).addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Failed to parse image");
+                    }
+                }
+        );
+    }
+
+    private void ProcessTextRecognitionResults(FirebaseVisionText texts)
+    {
+        System.out.println(texts.getText());
+
     }
 }
