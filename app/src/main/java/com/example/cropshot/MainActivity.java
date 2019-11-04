@@ -32,6 +32,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.io.*;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -107,16 +108,21 @@ public class MainActivity extends AppCompatActivity {
 
             System.out.println("Cropping");
 
-            if(!IsInstagramPhoto())
-                //return;
 
-            System.out.println("Identified an instagram photo");
+            Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
+            RunTextDetection(instaCrop);
+
+            /*
+            if(!isInstagramPhoto)
+                return;
+
+            */
 
             // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
             int topCropInt = FindBorder(DIR.TOP);
             int bottomCropInt = FindBorder(DIR.BOTTOM);
 
-            /*
+
 
             bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
@@ -127,11 +133,6 @@ public class MainActivity extends AppCompatActivity {
             // Lower bounded value
             Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
 
-            */
-
-            Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
-
-            RunTextDetection(croppedMap);
             //saveImage(bitMap, "IMG300");
 
             imageView.setImageBitmap(croppedMap);
@@ -214,20 +215,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    // Returns true if the image has features of an android studio image
-    boolean IsInstagramPhoto()
-    {
-        // Starting from the top of the image, going down, look for the color of the
-        // Gray pixel. If we find it, let's consider that image an instagram image
-        for (int i = 0; i <= bitMap.getHeight()/2; i++)
-        {
-            // System.out.println("left color: " + bitMap.getPixel(bitMap.getWidth() / 2, i) + "  Right color: " + Color.parseColor("#e3e3e3"));
-            if(CheckColor(bitMap.getPixel(bitMap.getWidth() / 2, i), Color.parseColor("#e3e3e3")))
-                return true;
-        }
-        return false;
     }
 
     // Checks the color of the left and right pixel
@@ -346,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
     {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(croppedMap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+
         detector.processImage(image).addOnSuccessListener(
                 new OnSuccessListener<FirebaseVisionText>() {
                     @Override
@@ -369,6 +357,34 @@ public class MainActivity extends AppCompatActivity {
     private void ProcessTextRecognitionResults(FirebaseVisionText texts)
     {
         System.out.println(texts.getText());
+
+        // Get all of the blocks in the current text
+        List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
+
+        if(blocks.size() == 0)
+            return;
+
+        for (int i = 0; i < blocks.size(); i++)
+        {
+
+            List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
+            for (int j = 0; j < lines.size(); j++)
+            {
+                List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
+                for (int k = 0; k < elements.size(); k++)
+                {
+                    // The text detection is not perfect, especially in the case of an image that
+                    // is slightly more blurry. When weird issues come up, we add a case to account
+                    // for those, hence the "instagam"
+                    if(elements.get(k).getText().equalsIgnoreCase("instagram") ||
+                            elements.get(k).getText().equalsIgnoreCase("instagam"))
+                    {
+                        System.out.println("Instagram image detected!");
+                        return;
+                    }
+                }
+            }
+        }
 
     }
 }
