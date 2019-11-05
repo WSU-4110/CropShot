@@ -1,2 +1,3 @@
-include ':app'
+include ':app', ':libadd:gson-master', ':gsonlibrary'
 rootProject.name='CropShot'
+

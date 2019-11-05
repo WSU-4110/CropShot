@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.graphics.Color;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
+
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     Bitmap bitMap;
     Uri contentURI;
     Bitmap preCrop;
+    Bitmap croppedMap;
 
     enum DIR {TOP, BOTTOM}
 
@@ -85,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCropClick(View v) {
         try {
-            setContentView(R.layout.activity_crop_save);
             //Convert uri image to bitmap
             bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
             preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
@@ -103,58 +105,26 @@ public class MainActivity extends AppCompatActivity {
 
             // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
             // Lower bounded value
-            Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
+            croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
 
             //saveImage(bitMap, "IMG300");
 
+            Gson gS = new Gson();
+            String target = gS.toJson(croppedMap);
 
-            imageView.setImageBitmap(croppedMap);
+            Intent postcrop = new Intent(this,PostCropActivity.class);
+            postcrop.putExtra("ImageViewAsString",target);
+            startActivity(postcrop);
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void onDiscardClick(View v)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setCancelable(true);
-            builder.setTitle("Are You Sure?");
-            builder.setMessage("Do you want to discard?");
-            builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    try {
-                        //revert to original display and remove original
-                        setContentView(R.layout.activity_main);
-                        imageView.setImageBitmap(preCrop);
-                    }
-                    catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
 
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
 
-    }
 
-    public void onSaveNewClick (View v)
-    {
-        try {
-            //creates new file
-            saveImage(bitMap);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 
@@ -179,9 +149,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    protected void overwriteImage(Bitmap finalBitmap) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+    }
 
-
-    private void saveImage(Bitmap finalBitmap) {
+    protected void saveImage(Bitmap finalBitmap) {
 
 
         String root = Environment.getExternalStorageDirectory().toString();
