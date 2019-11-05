@@ -35,7 +35,6 @@ public class PostCropActivity extends AppCompatActivity{
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_save);
-        String target = getIntent().getStringExtra("ImageViewAsString");
         setPostCropImage();
 
     }
