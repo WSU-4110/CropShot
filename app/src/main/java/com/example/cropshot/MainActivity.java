@@ -9,8 +9,11 @@ import android.graphics.ColorSpace;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
 
@@ -44,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     enum DIR {TOP, BOTTOM}
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -65,6 +70,46 @@ public class MainActivity extends AppCompatActivity {
 
         // Get access to the Cropping image image view, and store it in a variable
         imageView = (ImageView) findViewById(R.id.CroppingImg);
+        Button cropbtn = findViewById(R.id.CropButton);
+        cropbtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                try {
+                    //Convert uri image to bitmap
+                    bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+                    preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+
+
+                    // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
+                    int topCropInt = FindBorder(DIR.TOP);
+                    int bottomCropInt = FindBorder(DIR.BOTTOM);
+
+
+                    bottomCropInt = bitMap.getHeight() - bottomCropInt;
+
+
+                    System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
+
+                    // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
+                    // Lower bounded value
+                    croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
+
+                    //saveImage(bitMap, "IMG300");
+
+
+                    Intent postcrop = new Intent(MainActivity.this,PostCropActivity.class);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] bytes = stream.toByteArray();
+                    postcrop.putExtra("cropBytes",bytes);
+                    startActivity(postcrop);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -86,45 +131,41 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(photoPickerintent, IMAGE_GALLERY_REQUEST);
     }
 
-    public void onCropClick(View v) {
-        try {
-            //Convert uri image to bitmap
-            bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
-            preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
 
 
-            // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
-            int topCropInt = FindBorder(DIR.TOP);
-            int bottomCropInt = FindBorder(DIR.BOTTOM);
 
 
-            bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
 
-            System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
+    public void onDiscardClick(View v)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Are You Sure?");
+        builder.setMessage("Do you want to discard?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    //revert to original display and remove original
+                    setContentView(R.layout.activity_main);
+                    imageView.setImageBitmap(preCrop);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-            // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
-            // Lower bounded value
-            croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
-            //saveImage(bitMap, "IMG300");
-
-            Gson gS = new Gson();
-            String target = gS.toJson(croppedMap);
-
-            Intent postcrop = new Intent(this,PostCropActivity.class);
-            postcrop.putExtra("ImageViewAsString",target);
-            startActivity(postcrop);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
-
-
-
-
 
 
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ColorSpace;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,53 +36,19 @@ public class PostCropActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_save);
         String target = getIntent().getStringExtra("ImageViewAsString");
-        MainActivity src = gS.fromJson(target,MainActivity.class);
         setPostCropImage();
 
     }
 
     public void setPostCropImage() {
-        imageView.setImageBitmap(croppedMap);
-    }
-
-    public void onSaveNewClick (View v)
-    {
-        try {
-            //creates new file
-            saveImage(bitMap);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onDiscardClick(View v)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle("Are You Sure?");
-        builder.setMessage("Do you want to discard?");
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    //revert to original display and remove original
-                    setContentView(R.layout.activity_main);
-                    imageView.setImageBitmap(preCrop);
-                }
-                catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        byte[] bytes = getIntent().getByteArrayExtra("cropBytes");
+        Bitmap cropMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        ImageView cropImage = (ImageView) findViewById(R.id.CroppingImg);
+        cropImage.setImageBitmap(cropMap);
 
     }
+
+
+
+    
 }
