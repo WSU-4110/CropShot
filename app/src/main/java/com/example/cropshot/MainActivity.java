@@ -321,6 +321,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void openManualCrop(){
         Intent intent = new Intent(this,ManualCrop.class);
+
+        if(contentURI != null)
+            intent.putExtra("imageUri", contentURI.toString());
         startActivity(intent);
     }
 }
