@@ -115,14 +115,19 @@ public class MainActivity extends AppCompatActivity {
             croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
 
             //saveImage(bitMap, "IMG300");
+            imageView.setImageBitmap(croppedMap);
 
-
-            Intent postcrop = new Intent(MainActivity.this,PostCropActivity.class);
+            Intent postcrop = new Intent(this,PostCropActivity.class);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] bytes = stream.toByteArray();
+            ByteArrayOutputStream streamprecrop = new ByteArrayOutputStream();
+            preCrop.compress(Bitmap.CompressFormat.JPEG,100,streamprecrop);
+            byte[] bytesprecrop = streamprecrop.toByteArray();
             postcrop.putExtra("cropBytes",bytes);
+            postcrop.putExtra("precropBytes",bytesprecrop);
             startActivity(postcrop);
+
 
 
         } catch (Exception e) {
@@ -133,35 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void onDiscardClick(View v)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle("Are You Sure?");
-        builder.setMessage("Do you want to discard?");
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    //revert to original display and remove original
-                    setContentView(R.layout.activity_main);
-                    imageView.setImageBitmap(preCrop);
-                }
-                catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
 
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-    }
 
 
 
