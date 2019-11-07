@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
 
+
         <service
             android:name=".MyTileService"
             android:icon="@drawable/ic_crop_black_24dp"
@@ -35,6 +36,12 @@
         </service>
         
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"/>
+
+        <activity
+            android:name="PostCropActivity"
+            android:label="CropShot">
+        </activity>
+
     </application>
 
 </manifest>
