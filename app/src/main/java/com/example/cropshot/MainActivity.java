@@ -86,21 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onGalleryClick(View v) {
-        // Invoke the image gallery using an implicit intent
-        Intent photoPickerintent = new Intent(Intent.ACTION_PICK);
-
-        // Where do we want to find the data?
-        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-
-        String pictureDirectoryPath = pictureDirectory.getPath();
-
-        // Finally, get a URI representation
-        Uri data = Uri.parse(pictureDirectoryPath);
-
-        // Set the data and type Get all images types
-        photoPickerintent.setDataAndType(data, "image/*");
-
-        startActivityForResult(photoPickerintent, IMAGE_GALLERY_REQUEST);
+        AccessGallery.getInstance().getImageFromGallery(this, IMAGE_GALLERY_REQUEST);
     }
 
 
