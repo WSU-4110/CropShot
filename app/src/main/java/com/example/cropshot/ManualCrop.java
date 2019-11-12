@@ -89,15 +89,15 @@ public class ManualCrop extends AppCompatActivity {
         }
     }
 
+
+    public void openGOBACK(){
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
+
     private void startCrop(Uri imageuri) {
         CropImage.activity(imageuri)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setMultiTouchEnabled(true)
                 .start(this);
     }
-
-    public void openGOBACK(){
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-    }
-}
