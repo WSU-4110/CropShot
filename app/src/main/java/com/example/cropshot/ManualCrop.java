@@ -23,6 +23,8 @@ public class ManualCrop extends AppCompatActivity {
     ImageView imageView;
     Uri uri;
     private Button button;
+    private boolean on = true;
+    private boolean off = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +93,16 @@ public class ManualCrop extends AppCompatActivity {
 
 
     public void openGOBACK(){
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
+
+        if (on == true) {
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        else
+
+            startCrop(uri);
     }
 
     private void startCrop(Uri imageuri) {
