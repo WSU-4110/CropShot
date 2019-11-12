@@ -128,16 +128,13 @@ public class MainActivity extends AppCompatActivity {
             //saveImage(bitMap, "IMG300");
             imageView.setImageBitmap(croppedMap);
 
-            /*Intent postcrop = new Intent(this,PostCropActivity.class);
+            Intent postcrop = new Intent(this,PostCropActivity.class);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] bytes = stream.toByteArray();
-            ByteArrayOutputStream streamprecrop = new ByteArrayOutputStream();
-            preCrop.compress(Bitmap.CompressFormat.JPEG,100,streamprecrop);
-            byte[] bytesprecrop = streamprecrop.toByteArray();
             postcrop.putExtra("cropBytes",bytes);
-            postcrop.putExtra("precropBytes",bytesprecrop);
-            startActivity(postcrop);*/
+            postcrop.putExtra("precropuri",contentURI.toString());
+            startActivity(postcrop);
 
 
 

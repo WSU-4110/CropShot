@@ -32,6 +32,7 @@ import java.util.Random;
 
 public class PostCropActivity extends AppCompatActivity{
     Uri precropuri;
+    Bitmap cropMap;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class PostCropActivity extends AppCompatActivity{
 
     public void setPostCropImage() {
         byte[] bytes = getIntent().getByteArrayExtra("cropBytes");
-        Bitmap cropMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        cropMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         ImageView cropImage = (ImageView) findViewById(R.id.CroppingImg);
         String uriString = getIntent().getStringExtra("precropuri");
         precropuri = Uri.parse(uriString);
@@ -62,6 +63,35 @@ public class PostCropActivity extends AppCompatActivity{
                 try {
                     Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
                     mainactivity.putExtra("UriPostCropReset",precropuri);
+                    startActivity(mainactivity);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    public void onSaveNewClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Are You Sure?");
+        builder.setMessage("Do you want to save new?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    SaveImage.getInstance().saveNewImage(PostCropActivity.this, cropMap);
+                    Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
                     startActivity(mainactivity);
                 }
                 catch(Exception e) {
