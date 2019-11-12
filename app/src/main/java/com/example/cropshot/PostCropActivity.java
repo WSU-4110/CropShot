@@ -31,6 +31,8 @@ import java.util.Random;
 
 
 public class PostCropActivity extends AppCompatActivity{
+    Uri precropuri;
+
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +43,14 @@ public class PostCropActivity extends AppCompatActivity{
 
     public void setPostCropImage() {
         byte[] bytes = getIntent().getByteArrayExtra("cropBytes");
-        Bitmap cropMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        Bitmap cropMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         ImageView cropImage = (ImageView) findViewById(R.id.CroppingImg);
+        String uriString = getIntent().getStringExtra("precropuri");
+        precropuri = Uri.parse(uriString);
         cropImage.setImageBitmap(cropMap);
-
     }
 
-    /*public void onDiscardClick(View v)
+    public void onDiscardClick(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -57,7 +60,9 @@ public class PostCropActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
-
+                    Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
+                    mainactivity.putExtra("UriPostCropReset",precropuri);
+                    startActivity(mainactivity);
                 }
                 catch(Exception e) {
                     e.printStackTrace();
@@ -73,7 +78,7 @@ public class PostCropActivity extends AppCompatActivity{
         AlertDialog dialog = builder.create();
         dialog.show();
 
-    }*/
+    }
 
     
 }

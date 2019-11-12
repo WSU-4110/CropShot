@@ -19,7 +19,6 @@ import android.graphics.Color;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
 
 import android.util.Log;
 
