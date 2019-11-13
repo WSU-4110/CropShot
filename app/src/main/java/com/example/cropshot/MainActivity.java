@@ -106,40 +106,42 @@ public class MainActivity extends AppCompatActivity {
             //Convert uri image to bitmap
             bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
 
-            System.out.println("Cropping");
-
-
+            // Create a small version of the bitmap at the top of the screen
+            // (Where the words instagram are) to scan for the text "instagram"
             Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
             RunTextDetection(instaCrop);
 
-            /*
-            if(!isInstagramPhoto)
-                return;
 
-            */
-
-            // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
-            int topCropInt = FindBorder(DIR.TOP);
-            int bottomCropInt = FindBorder(DIR.BOTTOM);
-
-
-
-            bottomCropInt = bitMap.getHeight() - bottomCropInt;
-
-
-            // System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
-
-            // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
-            // Lower bounded value
-            Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
-
-            //saveImage(bitMap, "IMG300");
-
-            imageView.setImageBitmap(croppedMap);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void cropIfImageDetected()
+    {
+        // This function only gets called if firebase detects the string instagram in the image
+
+        System.out.println("Cropping");
+
+        // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
+        int topCropInt = FindBorder(DIR.TOP);
+        int bottomCropInt = FindBorder(DIR.BOTTOM);
+
+
+
+        bottomCropInt = bitMap.getHeight() - bottomCropInt;
+
+
+        // System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
+
+        // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
+        // Lower bounded value
+        Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
+
+        //saveImage(bitMap, "IMG300");
+
+        imageView.setImageBitmap(croppedMap);
     }
 
     public void onDiscardClick(View v)
@@ -376,10 +378,13 @@ public class MainActivity extends AppCompatActivity {
                     // The text detection is not perfect, especially in the case of an image that
                     // is slightly more blurry. When weird issues come up, we add a case to account
                     // for those, hence the "instagam"
-                    if(elements.get(k).getText().equalsIgnoreCase("instagram") ||
-                            elements.get(k).getText().equalsIgnoreCase("instagam"))
+                    String str = elements.get(k).getText().toLowerCase();
+                    if(str.contains("instagram") ||
+                            str.contains("instagam") ||
+                            str.contains("nstagam"))
                     {
                         System.out.println("Instagram image detected!");
+                        cropIfImageDetected();
                         return;
                     }
                 }
