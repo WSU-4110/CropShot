@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
 
@@ -32,7 +33,11 @@ import java.util.Random;
 
 public class PostCropActivity extends AppCompatActivity{
 
+    Bitmap cropMap;
     Uri precropuri;
+    Button saveNew;
+    Button overwrite;
+    Button Discard;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -44,7 +49,7 @@ public class PostCropActivity extends AppCompatActivity{
 
     public void setPostCropImage() {
         byte[] bytes = getIntent().getByteArrayExtra("cropBytes");
-        Bitmap cropMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        cropMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
         ImageView cropImage = (ImageView) findViewById(R.id.CroppingImg);
         String uriString = getIntent().getStringExtra("precropuri");
         precropuri = Uri.parse(uriString);
@@ -82,6 +87,58 @@ public class PostCropActivity extends AppCompatActivity{
         dialog.show();
 
     }
+
+    public void onSaveNewClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Are You Sure?");
+        builder.setMessage("Do you want to save new?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    saveNewImage(cropMap);
+                    Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
+                    startActivity(mainactivity);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    protected void saveNewImage(Bitmap bitmap) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n + ".jpg";
+        File file = new File(myDir, fname);
+        while (file.exists()) {
+            fname = fname+1;
+        }
+        Log.i("LOAD", root + fname);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     
 }
