@@ -19,7 +19,7 @@ import android.graphics.Color;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 import android.util.Log;
 
@@ -146,13 +146,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
