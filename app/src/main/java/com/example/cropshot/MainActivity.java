@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     Bitmap bitMap;
     Uri contentURI;
+    Uri postcropURI;
     Bitmap preCrop;
     Bitmap croppedMap;
 
@@ -47,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+
 
         button = (Button) findViewById(R.id.mcrop);
         button.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCropClick(View v) {
         try {
             //Convert uri image to bitmap
-            bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
-            preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+
 
 
             // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
@@ -117,16 +121,13 @@ public class MainActivity extends AppCompatActivity {
             //saveImage(bitMap, "IMG300");
             imageView.setImageBitmap(croppedMap);
 
-            /*Intent postcrop = new Intent(this,PostCropActivity.class);
+            Intent postcrop = new Intent(this,PostCropActivity.class);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] bytes = stream.toByteArray();
-            ByteArrayOutputStream streamprecrop = new ByteArrayOutputStream();
-            preCrop.compress(Bitmap.CompressFormat.JPEG,100,streamprecrop);
-            byte[] bytesprecrop = streamprecrop.toByteArray();
             postcrop.putExtra("cropBytes",bytes);
-            postcrop.putExtra("precropBytes",bytesprecrop);
-            startActivity(postcrop);*/
+            postcrop.putExtra("precropuri",contentURI.toString());
+            startActivity(postcrop);
 
 
 
@@ -138,15 +139,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         // Only preform operations if we know that our result has successfully happened
         if (resultCode == RESULT_OK) {
-            if (requestCode == IMAGE_GALLERY_REQUEST) {
+            String postcropURIreturn = getIntent().getStringExtra("UriPostCropReset");
+            if (postcropURIreturn != null) {
+                try {
+                    contentURI = Uri.parse(postcropURIreturn);
+                    imageView.setImageURI(contentURI);
+                    bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+                    preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+                    imageView.setImageBitmap(bitMap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else if (requestCode == IMAGE_GALLERY_REQUEST) {
                 try {
                     // Let's get the URI (or address) of the image our user has selected
                     contentURI = data.getData();
 
                     // Set our imageView to the URI of the selected image from the gallery
                     imageView.setImageURI(contentURI);
+                    bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+                    preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
