@@ -1,24 +1,48 @@
 package com.example.cropshot;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Icon;
-import android.preference.PreferenceManager;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import android.util.Log;
 import android.widget.Toast;
+import android.content.DialogInterface;
+import android.app.AlertDialog;
 
 public class MyTileService extends TileService {
-    SharedPreferences mSharedPreferences;
 
     @Override
     public void onClick() {
         super.onClick();
 
-        Tile tile = getQsTile();
-        //Start an activity while collapsing the panel.
-        startActivityAndCollapse(new Intent(this, MainActivity.class));
+        System.out.println("Outputting dialog");
+        createDialog();
+
+    }
+    public void createDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+
+        builder.setTitle("Confirm");
+        builder.setMessage("Are you sure you want to screenshot?");
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Do nothing, but close the dialog
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        showDialog(alertDialog);
         
     }
 
