@@ -1,18 +1,15 @@
 package com.example.cropshot;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.ColorSpace;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
-
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -39,13 +36,20 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
 
+    private Button button;
+
     // We need access to our image view
     ImageView imageView;
     Bitmap bitMap;
     Uri contentURI;
+    Uri postcropURI;
     Bitmap preCrop;
+    Bitmap croppedMap;
 
     enum DIR {TOP, BOTTOM}
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,19 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+
+
+        button = (Button) findViewById(R.id.mcrop);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openManualCrop();
+            }
+        });
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -70,17 +87,6 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.CroppingImg);
     }
 
-    public Bitmap cropImage(Context context, Uri userImage) throws Exception {
-        //Convert uri image to bitmap
-        Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
-        Bitmap preCrop = MediaStore.Images.Media.getBitmap(context.getContentResolver(), userImage);
-
-        //Crop out top 14 of height off image.
-        Bitmap resizedBitmap1 = Bitmap.createBitmap(bitmap, 0, 120, bitmap.getWidth(), bitmap.getHeight() - 200);
-
-        return resizedBitmap1;
-
-    }
 
     public void onGalleryClick(View v) {
         // Invoke the image gallery using an implicit intent
@@ -100,11 +106,12 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(photoPickerintent, IMAGE_GALLERY_REQUEST);
     }
 
+
+
     public void onCropClick(View v) {
         try {
-
             //Convert uri image to bitmap
-            bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+
 
             // Create a small version of the bitmap at the top of the screen
             // (Where the words instagram are) to scan for the text "instagram"
@@ -132,54 +139,53 @@ public class MainActivity extends AppCompatActivity {
 
         bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
-
-        // System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
-
         // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
         // Lower bounded value
-        Bitmap croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
+        croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
 
         //saveImage(bitMap, "IMG300");
-
         imageView.setImageBitmap(croppedMap);
-    }
 
-    public void onDiscardClick(View v)
-    {
-       try {
-           //revert to original display and remove original
-           setContentView(R.layout.activity_main);
-           imageView.setImageBitmap(preCrop);
-       }
-       catch(Exception e) {
-           e.printStackTrace();
-       }
-    }
+        Intent postcrop = new Intent(this,PostCropActivity.class);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] bytes = stream.toByteArray();
+        postcrop.putExtra("cropBytes",bytes);
+        postcrop.putExtra("precropuri",contentURI.toString());
+        startActivity(postcrop);
 
-    public void onSaveNewClick (View v)
-    {
-        try {
-            //creates new file
-            saveImage(bitMap);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         // Only preform operations if we know that our result has successfully happened
         if (resultCode == RESULT_OK) {
-            if (requestCode == IMAGE_GALLERY_REQUEST) {
+            String postcropURIreturn = getIntent().getStringExtra("UriPostCropReset");
+            if (postcropURIreturn != null) {
+                try {
+                    contentURI = Uri.parse(postcropURIreturn);
+                    imageView.setImageURI(contentURI);
+                    bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+                    preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+                    imageView.setImageBitmap(bitMap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else if (requestCode == IMAGE_GALLERY_REQUEST) {
                 try {
                     // Let's get the URI (or address) of the image our user has selected
                     contentURI = data.getData();
 
                     // Set our imageView to the URI of the selected image from the gallery
                     imageView.setImageURI(contentURI);
+                    bitMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
+                    preCrop = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), contentURI);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -189,12 +195,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void overwriteImage(Bitmap finalBitmap) {
 
+    protected void overwriteImage(Bitmap finalBitmap) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
     }
 
 
-    private void saveImage(Bitmap finalBitmap) {
+
+    protected void saveImage(Bitmap finalBitmap) {
+
 
 
         String root = Environment.getExternalStorageDirectory().toString();
@@ -391,5 +402,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
+    public void openManualCrop(){
+        Intent intent = new Intent(this,ManualCrop.class);
+
+        if(contentURI != null)
+            intent.putExtra("imageUri", contentURI.toString());
+        startActivity(intent);
     }
 }
