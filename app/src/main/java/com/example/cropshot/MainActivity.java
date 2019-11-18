@@ -127,33 +127,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void cropIfImageDetected()
     {
-        // This function only gets called if firebase detects the string instagram in the image
+        try {
+            // This function only gets called if firebase detects the string instagram in the image
 
-        System.out.println("Cropping");
+            System.out.println("Cropping");
 
-        // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
-        int topCropInt = FindBorder(DIR.TOP);
-        int bottomCropInt = FindBorder(DIR.BOTTOM);
+            // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
+            int topCropInt = FindBorder(DIR.TOP);
+            int bottomCropInt = FindBorder(DIR.BOTTOM);
 
 
+            bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
-        bottomCropInt = bitMap.getHeight() - bottomCropInt;
+            // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
+            // Lower bounded value
+            croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
 
-        // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
-        // Lower bounded value
-        croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
+            //saveImage(bitMap, "IMG300");
+            imageView.setImageBitmap(croppedMap);
 
-        //saveImage(bitMap, "IMG300");
-        imageView.setImageBitmap(croppedMap);
-
-        Intent postcrop = new Intent(this,PostCropActivity.class);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] bytes = stream.toByteArray();
-        postcrop.putExtra("cropBytes",bytes);
-        postcrop.putExtra("precropuri",contentURI.toString());
-        startActivity(postcrop);
-
+            Intent postcrop = new Intent(this, PostCropActivity.class);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bytes = stream.toByteArray();
+            postcrop.putExtra("cropBytes", bytes);
+            postcrop.putExtra("precropuri", contentURI.toString());
+            startActivity(postcrop);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -367,33 +366,28 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private void ProcessTextRecognitionResults(FirebaseVisionText texts)
-    {
+    private void ProcessTextRecognitionResults(FirebaseVisionText texts) {
         System.out.println(texts.getText());
 
         // Get all of the blocks in the current text
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
 
-        if(blocks.size() == 0)
+        if (blocks.size() == 0)
             return;
 
-        for (int i = 0; i < blocks.size(); i++)
-        {
+        for (int i = 0; i < blocks.size(); i++) {
 
             List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
-            for (int j = 0; j < lines.size(); j++)
-            {
+            for (int j = 0; j < lines.size(); j++) {
                 List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
-                for (int k = 0; k < elements.size(); k++)
-                {
+                for (int k = 0; k < elements.size(); k++) {
                     // The text detection is not perfect, especially in the case of an image that
                     // is slightly more blurry. When weird issues come up, we add a case to account
                     // for those, hence the "instagam"
                     String str = elements.get(k).getText().toLowerCase();
-                    if(str.contains("instagram") ||
+                    if (str.contains("instagram") ||
                             str.contains("instagam") ||
-                            str.contains("nstagam"))
-                    {
+                            str.contains("nstagam")) {
                         System.out.println("Instagram image detected!");
                         cropIfImageDetected();
                         return;
@@ -401,6 +395,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
 
 
     public void openManualCrop(){
