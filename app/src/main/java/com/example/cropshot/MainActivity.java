@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
+
+import com.example.cropshot.ui.SettingsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.util.Log;
 import androidx.annotation.Nullable;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         b_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                openSettings();
             }
         });
 
@@ -325,6 +327,11 @@ public class MainActivity extends AppCompatActivity {
 
         if(contentURI != null)
             intent.putExtra("imageUri", contentURI.toString());
+        startActivity(intent);
+    }
+
+    public void openSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 }
