@@ -28,6 +28,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
     testImplementation 'junit:junit:4.12'
+    // Firebase ML Text Detection
+    implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
@@ -37,3 +39,5 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.7'
 
 }
+
+apply plugin: 'com.google.gms.google-services'
