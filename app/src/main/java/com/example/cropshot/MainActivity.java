@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int IMAGE_GALLERY_REQUEST = 20;
 
     private Button button;
+    private Button b_settings;
 
     // We need access to our image view
     ImageView imageView;
@@ -38,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     enum DIR {TOP, BOTTOM}
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,9 +47,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        b_settings = (Button) findViewById(R.id.Settings);
+        b_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-
-
+            }
+        });
 
         button = (Button) findViewById(R.id.mcrop);
         button.setOnClickListener(new View.OnClickListener() {
