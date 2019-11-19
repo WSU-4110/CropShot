@@ -12,8 +12,19 @@ import android.widget.ImageView;
 import android.graphics.Color;
 
 import com.example.cropshot.ui.SettingsActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -22,6 +33,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.io.*;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -107,6 +119,24 @@ public class MainActivity extends AppCompatActivity {
             //Convert uri image to bitmap
 
 
+            // Create a small version of the bitmap at the top of the screen
+            // (Where the words instagram are) to scan for the text "instagram"
+            Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
+            RunTextDetection(instaCrop);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void cropIfImageDetected()
+    {
+        try {
+            // This function only gets called if firebase detects the string instagram in the image
+
+            System.out.println("Cropping");
 
             // Call the FindBorder function for both top and bottom, to find the top and bottom border heights
             int topCropInt = FindBorder(DIR.TOP);
@@ -115,9 +145,6 @@ public class MainActivity extends AppCompatActivity {
 
             bottomCropInt = bitMap.getHeight() - bottomCropInt;
 
-
-            System.out.println("Top = " + topCropInt + "  Bottom = " + bottomCropInt + "  Height = " + (bitMap.getHeight()));
-
             // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
             // Lower bounded value
             croppedMap = Bitmap.createBitmap(bitMap, 0, topCropInt, bitMap.getWidth(), bitMap.getHeight() - topCropInt - bottomCropInt);
@@ -125,16 +152,13 @@ public class MainActivity extends AppCompatActivity {
             //saveImage(bitMap, "IMG300");
             imageView.setImageBitmap(croppedMap);
 
-            Intent postcrop = new Intent(this,PostCropActivity.class);
+            Intent postcrop = new Intent(this, PostCropActivity.class);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] bytes = stream.toByteArray();
-            postcrop.putExtra("cropBytes",bytes);
-            postcrop.putExtra("precropuri",contentURI.toString());
+            postcrop.putExtra("cropBytes", bytes);
+            postcrop.putExtra("precropuri", contentURI.toString());
             startActivity(postcrop);
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -290,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
             int left_pixel = row.getPixel(0, height - 1);
             int right_pixel = row.getPixel(i, height - 1);
 
+
             //Checks if the pixels are the same color or if the pixels meet
             if (!CheckColor(left_pixel, right_pixel)) {
                 return false;
@@ -322,6 +347,63 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void RunTextDetection(Bitmap croppedMap)
+    {
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(croppedMap);
+        FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+
+        detector.processImage(image).addOnSuccessListener(
+                new OnSuccessListener<FirebaseVisionText>() {
+                    @Override
+                    public void onSuccess(FirebaseVisionText texts) {
+                        System.out.println("Succeeded process image!");
+                        ProcessTextRecognitionResults(texts);
+
+                    }
+                }
+
+        ).addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Failed to parse image");
+                    }
+                }
+        );
+    }
+
+    private void ProcessTextRecognitionResults(FirebaseVisionText texts) {
+        System.out.println(texts.getText());
+
+        // Get all of the blocks in the current text
+        List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
+
+        if (blocks.size() == 0)
+            return;
+
+        for (int i = 0; i < blocks.size(); i++) {
+
+            List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
+            for (int j = 0; j < lines.size(); j++) {
+                List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
+                for (int k = 0; k < elements.size(); k++) {
+                    // The text detection is not perfect, especially in the case of an image that
+                    // is slightly more blurry. When weird issues come up, we add a case to account
+                    // for those, hence the "instagam"
+                    String str = elements.get(k).getText().toLowerCase();
+                    if (str.contains("instagram") ||
+                            str.contains("instagam") ||
+                            str.contains("nstagam")) {
+                        System.out.println("Instagram image detected!");
+                        cropIfImageDetected();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+
     public void openManualCrop(){
         Intent intent = new Intent(this,ManualCrop.class);
 
@@ -335,3 +417,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
+
