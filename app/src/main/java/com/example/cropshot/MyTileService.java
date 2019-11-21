@@ -1,10 +1,16 @@
 package com.example.cropshot;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.content.DialogInterface;
 import android.app.AlertDialog;
+import android.app.Activity;
+import android.view.Window;
 
 public class MyTileService extends TileService {
 
@@ -28,6 +34,8 @@ public class MyTileService extends TileService {
 
                 // Do nothing, but close the dialog
                 dialog.dismiss();
+                View rootView;
+                //Bitmap bitmap = takeScreenshot(rootView);
             }
         });
 
@@ -44,6 +52,13 @@ public class MyTileService extends TileService {
         AlertDialog alertDialog = builder.create();
         showDialog(alertDialog);
         
+    }
+
+    public Bitmap takeScreenshot(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
     }
 
     @Override
