@@ -28,4 +28,14 @@ public class Load {
         activity.startActivityForResult(photoPickerintent, REQUESTCODE);
     }
 
+    public void scanGallery()
+    {
+
+    }
+
+    public void loadFromTileScreenshot()
+    {
+
+    }
+
 }
