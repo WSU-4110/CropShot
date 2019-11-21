@@ -10,8 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
+
+import com.example.cropshot.ui.SettingsActivity;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int IMAGE_GALLERY_REQUEST = 20;
 
     private Button button;
+    private Button b_settings;
 
     // We need access to our image view
     ImageView imageView;
@@ -48,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
     enum DIR {TOP, BOTTOM}
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -59,9 +61,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
+        b_settings = (Button) findViewById(R.id.Settings);
+        b_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettings();
+            }
+        });
 
         button = (Button) findViewById(R.id.mcrop);
         button.setOnClickListener(new View.OnClickListener() {
@@ -405,4 +411,10 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("imageUri", contentURI.toString());
         startActivity(intent);
     }
+
+    public void openSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
 }
+
