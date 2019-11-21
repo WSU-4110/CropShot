@@ -1,18 +1,45 @@
 package com.example.cropshot;
 
+import android.graphics.Bitmap;
+import android.os.Environment;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Random;
+
 public class Save {
 
-    public void saveAsNew()
+    public void saveAsNew(Bitmap finalBitmap)
+    {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n + ".jpg";
+        File file = new File(myDir, fname);
+        while (file.exists()) {
+            fname = fname+1;
+        }
+        Log.i("LOAD", root + fname);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Overwrite(Bitmap finalBitmap)
     {
 
     }
 
-    public void Overwrite()
-    {
-
-    }
-
-    public void SaveAs(String name)
+    public void SaveAs(String name, Bitmap finalBitmap)
     {
 
     }

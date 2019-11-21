@@ -113,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
             Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
             firebaseDetectionObject.runTextDetection(instaCrop);
 
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,10 +123,12 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("cropIfImageDetected Called!");
 
         Crop cropImg = new Crop();
-        croppedMap = cropImg.cropImage(contentURI, imageView, this);
+        croppedMap = cropImg.cropImage(contentURI, this);
 
         if(croppedMap == null)
             return;
+
+        imageView.setImageBitmap(croppedMap);
 
         Intent postcrop = new Intent(this, PostCropActivity.class);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -180,58 +180,6 @@ public class MainActivity extends AppCompatActivity {
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/saved_images");
         myDir.mkdirs();
-    }
-
-
-
-    protected void saveImage(Bitmap finalBitmap) {
-
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-" + n + ".jpg";
-        File file = new File(myDir, fname);
-        while (file.exists()) {
-            fname = fname+1;
-        }
-        Log.i("LOAD", root + fname);
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
-    public Bitmap cropSolidRow(Bitmap bitmap, int cropHeight, DIR direction){
-        int bitmapWidth = bitmap.getWidth();
-
-
-        // Crop from solid row upward
-        if (direction == DIR.TOP){
-            int numOfRows = bitmap.getHeight() - cropHeight;
-
-            Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, cropHeight, bitmapWidth, numOfRows);
-            return newBitmap;
-        }
-
-        // Crop from solid row downward
-        //else if direction == DIR.BOTTOM
-        else {
-            // Height - number of rows to delete at end of picture
-            int numOfRows = bitmap.getHeight() - (bitmap.getHeight() - cropHeight);
-
-            Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmapWidth, numOfRows);
-            return newBitmap;
-        }
     }
 
 

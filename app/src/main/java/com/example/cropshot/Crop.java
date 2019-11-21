@@ -1,19 +1,14 @@
 package com.example.cropshot;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.widget.ImageView;
-
-import java.io.ByteArrayOutputStream;
-import java.net.URI;
 
 public class Crop {
 
-    public Bitmap cropImage(Uri contentURI, ImageView imageView, Activity activity)
+    public Bitmap cropImage(Uri contentURI, Activity activity)
     {
         try {
 
@@ -31,9 +26,6 @@ public class Crop {
             // Crop the top of the bitmap. Because bitmaps 0,0 starts in upper left, we must insert topCropInt as the
             // Lower bounded value
             Bitmap croppedMap = Bitmap.createBitmap(bitmap, 0, topCropInt, bitmap.getWidth(), bitmap.getHeight() - topCropInt - bottomCropInt);
-
-            //saveImage(bitMap, "IMG300");
-            imageView.setImageBitmap(croppedMap);
 
             return croppedMap;
         } catch (Exception e) {
