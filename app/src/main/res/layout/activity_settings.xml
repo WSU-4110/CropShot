@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity">
+    tools:context=".SettingsActivity"
+    android:background="?attr/backgroundcolor">
 
     <Button
         android:id="@+id/About"
@@ -36,18 +37,44 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="268dp"
-        android:layout_marginBottom="480dp"
-        android:text="Use ML" />
+        android:layout_marginEnd="221dp"
+        android:layout_marginBottom="484dp"
+        android:textColor="?attr/textcolor" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/darkswitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="238dp"
+        android:layout_marginEnd="214dp"
         android:layout_marginBottom="416dp"
-        android:text="Dark Theme" />
+        android:textColor="?attr/textcolor" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="275dp"
+        android:layout_marginBottom="486dp"
+        android:textColor="?attr/textcolor"
+        android:text="Use ML"
+        tools:text="Use ML" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="269dp"
+        android:layout_marginBottom="416dp"
+        android:textColor="?attr/textcolor"
+        android:text="Dark Mode"
+        tools:text="Dark Mode" />
 
 </RelativeLayout>
