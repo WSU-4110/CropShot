@@ -37,6 +37,8 @@
         android:layout_marginBottom="64dp"
         android:onClick="onCropClick"
         android:text="Crop"
+        android:background="?attr/buttoncolor"
+        android:textColor="#fff"
         app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintStart_toStartOf="@+id/nav_view" />
 
@@ -47,6 +49,8 @@
         android:layout_marginTop="45dp"
         android:layout_marginEnd="84dp"
         android:text="Settings"
+        android:background="?attr/buttoncolor"
+        android:textColor="#fff"
         app:layout_constraintEnd_toEndOf="@+id/nav_host_fragment"
         app:layout_constraintTop_toTopOf="@+id/nav_host_fragment" />
 
@@ -58,6 +62,8 @@
         android:layout_marginTop="45dp"
         android:onClick="onGalleryClick"
         android:text="Gallery"
+        android:background="?attr/buttoncolor"
+        android:textColor="#fff"
         app:layout_constraintStart_toStartOf="@+id/nav_host_fragment"
         app:layout_constraintTop_toTopOf="@+id/nav_host_fragment" />
 
@@ -76,6 +82,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Manual Crop"
+        android:background="?attr/buttoncolor"
+        android:textColor="#fff"
         app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintEnd_toEndOf="@+id/nav_view"
         app:layout_constraintStart_toStartOf="@+id/nav_view" />
