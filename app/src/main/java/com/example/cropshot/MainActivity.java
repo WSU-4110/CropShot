@@ -138,13 +138,25 @@ public class MainActivity extends AppCompatActivity {
 
         imageView.setImageBitmap(croppedMap);
 
+        // Get a compressed bitmap and pass it into startPostCrop
+
+        startPostCrop(compressBitmap(croppedMap));
+    }
+
+    private void startPostCrop(byte[] bytes)
+    {
         Intent postcrop = new Intent(this, PostCropActivity.class);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] bytes = stream.toByteArray();
         postcrop.putExtra("cropBytes", bytes);
         postcrop.putExtra("precropuri", contentURI.toString());
         startActivity(postcrop);
+    }
+
+    private byte[] compressBitmap(Bitmap mapToCompress)
+    {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] bytes = stream.toByteArray();
+        return bytes;
     }
 
     @Override
