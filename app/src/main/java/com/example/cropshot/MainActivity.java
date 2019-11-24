@@ -105,13 +105,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCropClick(View v) {
         try {
-            // Create firebase object
-            FirebaseDetection firebaseDetectionObject = new FirebaseDetection(this);
+            // If the user disables the useML functionality don't do this check
+            if(SettingsSingleton.getInstance().getUseML())
+            {
+                // Create firebase object
+                FirebaseDetection firebaseDetectionObject = new FirebaseDetection(this);
 
-            // Create a small version of the bitmap at the top of the screen
-            // (Where the words instagram are) to scan for the text "instagram"
-            Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
-            firebaseDetectionObject.runTextDetection(instaCrop);
+                // Create a small version of the bitmap at the top of the screen
+                // (Where the words instagram are) to scan for the text "instagram"
+                Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
+                firebaseDetectionObject.runTextDetection(instaCrop);
+            }
+            else
+            {
+                cropIfImageDetected();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
