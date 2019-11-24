@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void cropIfImageDetected()
+    public boolean cropIfImageDetected()
     {
         System.out.println("cropIfImageDetected Called!");
 
@@ -134,21 +134,27 @@ public class MainActivity extends AppCompatActivity {
         croppedMap = cropImg.cropImage(contentURI, this);
 
         if(croppedMap == null)
-            return;
+            return false;
 
         imageView.setImageBitmap(croppedMap);
 
         // Get a compressed bitmap and pass it into startPostCrop
 
         startPostCrop(compressBitmap(croppedMap));
+
+        return true;
     }
 
-    private void startPostCrop(byte[] bytes)
+    private boolean startPostCrop(byte[] bytes)
     {
+        if(bytes == null)
+            return false;
+
         Intent postcrop = new Intent(this, PostCropActivity.class);
         postcrop.putExtra("cropBytes", bytes);
         postcrop.putExtra("precropuri", contentURI.toString());
         startActivity(postcrop);
+        return true;
     }
 
     private byte[] compressBitmap(Bitmap mapToCompress)

@@ -24,7 +24,7 @@ public class FirebaseDetection {
         this.activity = activity;
     }
 
-    public void runTextDetection(Bitmap croppedMap)
+    public boolean runTextDetection(Bitmap croppedMap)
     {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(croppedMap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
@@ -35,7 +35,6 @@ public class FirebaseDetection {
                     public void onSuccess(FirebaseVisionText texts) {
                         System.out.println("Succeeded process image!");
                         processTextRecognitionResults(texts);
-
                     }
                 }
 
@@ -47,16 +46,18 @@ public class FirebaseDetection {
                     }
                 }
         );
+
+        return true;
     }
 
-    private void processTextRecognitionResults(FirebaseVisionText texts) {
+    private boolean processTextRecognitionResults(FirebaseVisionText texts) {
         System.out.println(texts.getText());
 
         // Get all of the blocks in the current text
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
 
         if (blocks.size() == 0)
-            return;
+            return false;
 
         for (int i = 0; i < blocks.size(); i++) {
 
@@ -71,11 +72,13 @@ public class FirebaseDetection {
                     if (checkForInstagramStr(str)) {
                         System.out.println("Instagram image detected!");
                         activity.cropIfImageDetected();
-                        return;
+                        return true;
                     }
                 }
             }
         }
+
+        return false;
     }
 
     boolean checkForInstagramStr(String str)
