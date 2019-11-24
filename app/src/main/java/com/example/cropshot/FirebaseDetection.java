@@ -68,9 +68,7 @@ public class FirebaseDetection {
                     // is slightly more blurry. When weird issues come up, we add a case to account
                     // for those, hence the "instagam"
                     String str = elements.get(k).getText().toLowerCase();
-                    if (str.contains("instagram") ||
-                            str.contains("instagam") ||
-                            str.contains("nstagam")) {
+                    if (checkForInstagramStr(str)) {
                         System.out.println("Instagram image detected!");
                         activity.cropIfImageDetected();
                         return;
@@ -78,6 +76,13 @@ public class FirebaseDetection {
                 }
             }
         }
+    }
+
+    boolean checkForInstagramStr(String str)
+    {
+        return (str.contains("instagram") ||
+                str.contains("instagam") ||
+                str.contains("nstagam"))
     }
 
     // Used for file scanning
