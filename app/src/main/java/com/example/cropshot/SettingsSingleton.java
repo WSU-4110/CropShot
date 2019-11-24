@@ -6,7 +6,7 @@ public class SettingsSingleton {
 
     private SettingsSingleton() {};
     private boolean isDarkMode = false;
-    private boolean useML = false;
+    private boolean useML = true;
 
     // If the class doesn't already exist, create a new instance of it
     // otherwise, return the currently existing instance.
