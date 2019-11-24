@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     Uri contentURI;
     Uri postcropURI;
     Bitmap preCrop;
-    Bitmap croppedMap;
+    //Bitmap croppedMap;
 
     enum DIR {TOP, BOTTOM}
 
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else
             {
-                cropIfImageDetected();
+                cropIfImageDetected(bitMap);
             }
 
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean cropIfImageDetected()
+    public boolean cropIfImageDetected(Bitmap croppedMap)
     {
         System.out.println("cropIfImageDetected Called!");
 
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean startPostCrop(byte[] bytes)
+    public boolean startPostCrop(byte[] bytes)
     {
         if(bytes == null)
             return false;
@@ -157,10 +157,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private byte[] compressBitmap(Bitmap mapToCompress)
+    public byte[] compressBitmap(Bitmap mapToCompress)
     {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        mapToCompress.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] bytes = stream.toByteArray();
         return bytes;
     }

@@ -50,7 +50,7 @@ public class FirebaseDetection {
         return true;
     }
 
-    private boolean processTextRecognitionResults(FirebaseVisionText texts) {
+    public boolean processTextRecognitionResults(FirebaseVisionText texts) {
         System.out.println(texts.getText());
 
         // Get all of the blocks in the current text
@@ -68,10 +68,10 @@ public class FirebaseDetection {
                     // The text detection is not perfect, especially in the case of an image that
                     // is slightly more blurry. When weird issues come up, we add a case to account
                     // for those, hence the "instagam"
-                    String str = elements.get(k).getText().toLowerCase();
+                    String str = elements.get(k).getText();
                     if (checkForInstagramStr(str)) {
                         System.out.println("Instagram image detected!");
-                        activity.cropIfImageDetected();
+                        activity.cropIfImageDetected(activity.bitMap);
                         return true;
                     }
                 }
@@ -81,11 +81,13 @@ public class FirebaseDetection {
         return false;
     }
 
-    boolean checkForInstagramStr(String str)
+    public boolean checkForInstagramStr(String str)
     {
+        str = str.toLowerCase();
         return (str.contains("instagram") ||
                 str.contains("instagam") ||
-                str.contains("nstagam"));
+                str.contains("nstagam")) ||
+                str.contains("nstagram");
     }
 
     // Used for file scanning
