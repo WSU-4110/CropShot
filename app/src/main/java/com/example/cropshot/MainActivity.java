@@ -94,17 +94,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void onGalleryClick(View v) {
+    public boolean onGalleryClick(View v) {
+        if (v == null)
+            return false;
         Load loadObject = new Load();
         loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
-
-
+        return true;
     }
 
 
 
-    public void onCropClick(View v) {
+    public boolean onCropClick(View v) {
         try {
+            if (v == null)
+                return false;
+
             // Create firebase object
             FirebaseDetection firebaseDetectionObject = new FirebaseDetection(this);
 
@@ -116,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public void cropIfImageDetected()
@@ -183,17 +188,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void openManualCrop(){
+    public boolean openManualCrop(){
+        //If package context being passed through is null
+        if (this == null)
+            return false;
         Intent intent = new Intent(this,ManualCrop.class);
 
         if(contentURI != null)
             intent.putExtra("imageUri", contentURI.toString());
         startActivity(intent);
+        return true;
     }
 
-    public void openSettings(){
+    public boolean openSettings(){
+        //If package context being passed through is null
+        if (this == null)
+            return false;
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+        return true;
     }
 }
 
