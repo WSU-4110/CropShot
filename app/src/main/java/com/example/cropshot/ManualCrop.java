@@ -19,6 +19,8 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class ManualCrop extends AppCompatActivity {
+    public static final int IMAGE_GALLERY_REQUEST = 20;
+
     ImageButton browser,btReset;
     ImageView imageView;
     Uri uri;
@@ -41,13 +43,6 @@ public class ManualCrop extends AppCompatActivity {
         btReset = findViewById(R.id.bt_reset);
         imageView = findViewById(R.id.image_view);
 
-        browser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CropImage.startPickImageActivity(ManualCrop.this);
-            }
-        });
-
         btReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,10 +60,17 @@ public class ManualCrop extends AppCompatActivity {
 
     }
 
+    public void onGalleryClick(View v) {
+        Load loadObject = new Load();
+        loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
+
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE
+        if (requestCode == IMAGE_GALLERY_REQUEST
                 && resultCode == Activity.RESULT_OK) {
             Uri imageuri = CropImage.getPickImageResultUri(this, data);
             if (CropImage.isReadExternalStoragePermissionsRequired(this, imageuri)) {
