@@ -8,7 +8,8 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="10dp"
-    tools:context=".ManualCrop">
+    tools:context=".ManualCrop"
+    android:background="?attr/backgroundcolor">
 
    <ImageView
        android:layout_width="match_parent"
