@@ -38,6 +38,9 @@ dependencies {
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.7'
 
+    testImplementation 'junit:junit:4.12'
+
+    testImplementation 'org.mockito:mockito-core:1.10.19'
 }
 
 apply plugin: 'com.google.gms.google-services'

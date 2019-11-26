@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class Save {
 
-    public void saveAsNew(Bitmap finalBitmap)
+    public boolean saveAsNew(Bitmap finalBitmap)
     {
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/saved_images");
@@ -32,6 +32,8 @@ public class Save {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (file != null) return true;
+        return false;
     }
 
     public void Overwrite(Bitmap finalBitmap)
