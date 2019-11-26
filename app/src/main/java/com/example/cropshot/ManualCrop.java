@@ -2,6 +2,7 @@ package com.example.cropshot;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.Manifest;
 import android.app.Activity;
@@ -28,6 +29,13 @@ public class ManualCrop extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if(SettingsSingleton.getInstance().getDarkMode())
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            setTheme(R.style.darktheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manual_crop);
 
