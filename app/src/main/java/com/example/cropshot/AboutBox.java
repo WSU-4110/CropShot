@@ -1,4 +1,4 @@
-package com.example.cropshot.ui;
+package com.example.cropshot;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

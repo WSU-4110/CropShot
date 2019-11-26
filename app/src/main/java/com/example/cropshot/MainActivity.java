@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
 
-import com.example.cropshot.ui.SettingsActivity;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
