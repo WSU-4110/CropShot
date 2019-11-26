@@ -55,11 +55,13 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
+                    SettingsSingleton.getInstance().setDarkMode(true);
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     //Shared.Data.style = R.style.darktheme;
                     restartApp();
                 }
                 else{
+                    SettingsSingleton.getInstance().setDarkMode(false);
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     //Shared.Data.style = R.style.AppTheme;
                     restartApp();
@@ -69,8 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void openGOBACK(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     public void openAbout(){

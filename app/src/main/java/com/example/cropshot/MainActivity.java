@@ -25,6 +25,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -55,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         // ------------ TEMPLATE CODE --------------
+
+        if(SettingsSingleton.getInstance().getDarkMode())
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            setTheme(R.style.darktheme);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -89,17 +96,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Get access to the Cropping image image view, and store it in a variable
         imageView = (ImageView) findViewById(R.id.CroppingImg);
-    }
 
+    }
 
     public void onGalleryClick(View v) {
         Load loadObject = new Load();
         loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
 
-
     }
-
-
 
     public void onCropClick(View v) {
         try {
