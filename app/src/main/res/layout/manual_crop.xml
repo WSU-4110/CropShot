@@ -8,7 +8,8 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="10dp"
-    tools:context=".ManualCrop">
+    tools:context=".ManualCrop"
+    android:background="?attr/backgroundcolor">
 
    <ImageView
        android:layout_width="match_parent"
@@ -47,6 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="BACK"
+            android:background="?attr/buttoncolor"
+            android:textColor="#fff"
             android:layout_marginLeft="50dp"/>
 
     </LinearLayout>
