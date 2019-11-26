@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+
         // ------------ TEMPLATE CODE --------------
 
         // Get access to the Cropping image image view, and store it in a variable
