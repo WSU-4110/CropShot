@@ -1,7 +1,9 @@
 package com.example.cropshot;
 
+import android.graphics.Bitmap;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
+import android.view.View;
 import android.widget.Toast;
 import android.content.DialogInterface;
 import android.app.AlertDialog;
@@ -44,6 +46,12 @@ public class MyTileService extends TileService {
         AlertDialog alertDialog = builder.create();
         showDialog(alertDialog);
         
+    }
+
+    private void takeScreenshot(View v) {
+        View screenView = v.getRootView();
+
+
     }
 
     @Override
