@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class Save {
 
-    public void saveAsNew(Bitmap finalBitmap)
+    public boolean saveAsNew(Bitmap finalBitmap)
     {
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/saved_images");
@@ -20,9 +20,6 @@ public class Save {
         n = generator.nextInt(n);
         String fname = "Image-" + n + ".jpg";
         File file = new File(myDir, fname);
-        while (file.exists()) {
-            fname = fname+1;
-        }
         Log.i("LOAD", root + fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
@@ -32,6 +29,8 @@ public class Save {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (file != null) return true;
+        return false;
     }
 
     public void Overwrite(Bitmap finalBitmap)
