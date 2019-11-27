@@ -26,7 +26,7 @@ public class Save {
         mydir.mkdirs();
         FileOutputStream fostream = null;
         try {
-            fostream = new FileOutputStream(createFile());
+            //fostream = new FileOutputStream(createFile());//
             finalBitmap.compress(Bitmap.CompressFormat.JPEG,100,fostream);
 
         }
@@ -56,9 +56,9 @@ public class Save {
         return new File("saved_images",fname);
     }*/
 
-    public static File mainDirectory(Context context) {
-        File mainDir = new File(context.getExternalFilesDir())
-    }
+    /*public static File mainDirectory(Context context) {
+
+    }*/
 
     public void saveAsNew(Bitmap finalBitmap)
     {
