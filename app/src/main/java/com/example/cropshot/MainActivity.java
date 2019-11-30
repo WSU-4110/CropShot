@@ -1,7 +1,12 @@
 package com.example.cropshot;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,12 +37,14 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 30;
 
     private Button button;
     private Button b_settings;
@@ -50,10 +57,30 @@ public class MainActivity extends AppCompatActivity {
     Bitmap preCrop;
     Bitmap croppedMap;
 
+    // Tracks whether or not we're preforming the image scan operation
+    //boolean imageScanning;
+
     enum DIR {TOP, BOTTOM}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Explain to the user why we need to read the contacts
+            }
+
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+            // app-defined int constant that should be quite unique
+
+        }
 
         // ------------ TEMPLATE CODE --------------
 
@@ -144,6 +171,59 @@ public class MainActivity extends AppCompatActivity {
         // Get a compressed bitmap and pass it into startPostCrop
 
         startPostCrop(compressBitmap(croppedMap));
+    }
+
+    public void onScanClick(View v)
+    {
+        // If the user clicks this button let's create a popup message asking if they're sure
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Are You Sure?");
+        builder.setMessage("Do you want to scan and crop your files? This may take a while.");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            // If they click yes, we want to start the scan
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    startImageScan();
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        // Otherwise we simply dismiss the screen
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void startImageScan()
+    {
+        // Find all image URLs in the gallery
+        Load load = new Load();
+
+        ArrayList<String> filesScanned = load.scanGallery(this);
+
+        // If there are none simply return
+        if(filesScanned.size() == 0)
+            return;
+
+        System.out.println("We're starting the image scan");
+
+        for(int i = 0; i < filesScanned.size(); i++)
+        {
+            // Get a Uri of that file
+            String filePath = filesScanned.get(i);
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            imageView.setImageBitmap(bitmap);
+            System.out.println("Wow, lots of images here " + i);
+        }
     }
 
     private void startPostCrop(byte[] bytes)
