@@ -82,7 +82,10 @@ public class FirebaseDetection {
     {
         return (str.contains("instagram") ||
                 str.contains("instagam") ||
-                str.contains("nstagam"));
+                str.contains("nstagam") ||
+                str.contains("nstagram") ||
+                str.contains("posts") ||
+                str.contains("explore"));
     }
 
     // Used for file scanning

@@ -30,7 +30,15 @@ public class Load {
 
     public void scanGallery()
     {
+        // Where do we want to find the data?
+        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
+        String pictureDirectoryPath = pictureDirectory.getPath();
+
+        // Finally, get a URI representation
+        Uri data = Uri.parse(pictureDirectoryPath);
+
+        File[] listFile = pictureDirectory.listFiles();
     }
 
     public void loadFromTileScreenshot()
