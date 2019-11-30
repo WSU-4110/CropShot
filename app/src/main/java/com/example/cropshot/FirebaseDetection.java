@@ -44,8 +44,11 @@ public class FirebaseDetection {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         System.out.println("Failed to parse image");
+                        // If we don't find any text, we still want to continue the file scan
+                        activity.progressImageScan();
                     }
                 }
+
         );
     }
 
@@ -76,6 +79,8 @@ public class FirebaseDetection {
                 }
             }
         }
+        // If we don't find the word instagram we still want to progress filescanning
+        activity.progressImageScan();
     }
 
     boolean checkForInstagramStr(String str)

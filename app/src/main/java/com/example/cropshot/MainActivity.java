@@ -57,14 +57,20 @@ public class MainActivity extends AppCompatActivity {
     Bitmap preCrop;
     Bitmap croppedMap;
 
+    // Used for image scanning
     // Tracks whether or not we're preforming the image scan operation
-    //boolean imageScanning;
+    boolean imageScanning;
+    // Holds the URLs for all the images we scanned in
+    ArrayList<String> filesScanned;
+    // Holds the index or our position in the list
+    int filePos;
 
     enum DIR {TOP, BOTTOM}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        // Request user access permissions
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
@@ -138,13 +144,7 @@ public class MainActivity extends AppCompatActivity {
             // If the user disables the useML functionality don't do this check
             if(SettingsSingleton.getInstance().getUseML())
             {
-                // Create firebase object
-                FirebaseDetection firebaseDetectionObject = new FirebaseDetection(this);
-
-                // Create a small version of the bitmap at the top of the screen
-                // (Where the words instagram are) to scan for the text "instagram"
-                Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
-                firebaseDetectionObject.runTextDetection(instaCrop);
+                callFirebase(bitMap);
             }
             else
             {
@@ -158,19 +158,50 @@ public class MainActivity extends AppCompatActivity {
 
     public void cropIfImageDetected()
     {
-        System.out.println("cropIfImageDetected Called!");
+        // If we're scanning images currently we want different logic
+        if(imageScanning)
+        {
+            Crop cropImg = new Crop();
+            // This should be a Uri, maybe it isn't??
+            // Crop the image at the current position
+            Uri fileUri = Uri.fromFile(new File(filesScanned.get(filePos)));
+            croppedMap = cropImg.cropImage(fileUri, this);
+            // if it doesn't crop continue the scan, otherwise save it and continue the scan
 
-        Crop cropImg = new Crop();
-        croppedMap = cropImg.cropImage(contentURI, this);
+            if(croppedMap == null)
+                progressImageScan();
 
-        if(croppedMap == null)
+            System.out.println("Image detected during image scan");
+
+            imageView.setImageBitmap(croppedMap);
+
+            Save save = new Save();
+
+            save.saveAsNew(croppedMap);
+
+            progressImageScan();
+        }
+        else
+        {
+            Crop cropImg = new Crop();
+            croppedMap = cropImg.cropImage(contentURI, this);
+
+            if(croppedMap == null)
+                return;
+
+            imageView.setImageBitmap(croppedMap);
+
+            // Get a compressed bitmap and pass it into startPostCrop
+
+            startPostCrop(compressBitmap(croppedMap));
+        }
+    }
+
+    // The function called when firebase fails to detect an instagram image
+    public void imageNotDetected()
+    {
+        if(!imageScanning)
             return;
-
-        imageView.setImageBitmap(croppedMap);
-
-        // Get a compressed bitmap and pass it into startPostCrop
-
-        startPostCrop(compressBitmap(croppedMap));
     }
 
     public void onScanClick(View v)
@@ -205,33 +236,67 @@ public class MainActivity extends AppCompatActivity {
 
     private void startImageScan()
     {
+        // If we start image scanning then we want to set this to true
+        imageScanning = true;
+
         // Find all image URLs in the gallery
         Load load = new Load();
 
-        ArrayList<String> filesScanned = load.scanGallery(this);
+        filesScanned = load.scanGallery(this);
+        filePos = 0;
 
         // If there are none simply return
         if(filesScanned.size() == 0)
+        {
+            filePos = -1;
+            filesScanned = null;
+            imageScanning = false;
             return;
+        }
 
         System.out.println("We're starting the image scan");
+        progressImageScan();
 
-        for(int i = 0; i < filesScanned.size(); i++)
-        {
-            // Get a Uri of that file
-            String filePath = filesScanned.get(i);
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            imageView.setImageBitmap(bitmap);
-            System.out.println("Wow, lots of images here " + i);
-        }
     }
 
-    private void startPostCrop(byte[] bytes)
+    public void progressImageScan()
     {
-        Intent postcrop = new Intent(this, PostCropActivity.class);
-        postcrop.putExtra("cropBytes", bytes);
-        postcrop.putExtra("precropuri", contentURI.toString());
-        startActivity(postcrop);
+        // If we aren't filescanning don't do this logic
+        if(!imageScanning)
+            return;
+
+        // First add 1 to the file position
+        filePos++;
+
+        // Then check if we've reached the last image (In this case, filePos is 1 greater than the size
+        if(filePos >= filesScanned.size())
+        {
+            filePos = -1;
+            filesScanned = null;
+            imageScanning = false;
+            return;
+        }
+        else
+        {
+            // Otherwise we start the next scan
+            // Get a Uri of that file
+            String filePath = filesScanned.get(filePos);
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+            callFirebase(bitmap);
+        }
+
+    }
+
+    private void callFirebase(Bitmap firebaseBitmap)
+    {
+        // Create firebase object
+        FirebaseDetection firebaseDetectionObject = new FirebaseDetection(this);
+
+        // Create a small version of the bitmap at the top of the screen
+        // (Where the words instagram are) to scan for the text "instagram"
+        Bitmap instaCrop = Bitmap.createBitmap(firebaseBitmap, 0, 0, firebaseBitmap.getWidth(), 200);
+        firebaseDetectionObject.runTextDetection(instaCrop);
     }
 
     private byte[] compressBitmap(Bitmap mapToCompress)
@@ -277,14 +342,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-    protected void overwriteImage(Bitmap finalBitmap) {
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
+    private void startPostCrop(byte[] bytes)
+    {
+        Intent postcrop = new Intent(this, PostCropActivity.class);
+        postcrop.putExtra("cropBytes", bytes);
+        postcrop.putExtra("precropuri", contentURI.toString());
+        startActivity(postcrop);
     }
-
 
     public void openManualCrop(){
         Intent intent = new Intent(this,ManualCrop.class);
