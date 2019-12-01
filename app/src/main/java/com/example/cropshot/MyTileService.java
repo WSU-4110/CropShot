@@ -1,5 +1,6 @@
 package com.example.cropshot;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.service.quicksettings.Tile;
@@ -12,53 +13,34 @@ import android.app.AlertDialog;
 import android.app.Activity;
 import android.view.Window;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import android.content.Intent;
+
 public class MyTileService extends TileService {
 
     @Override
     public void onClick() {
         super.onClick();
-
-        System.out.println("Outputting dialog");
-        createDialog();
-
-    }
-    public void createDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-
-        builder.setTitle("Confirm");
-        builder.setMessage("Are you sure you want to screenshot?");
-
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-
-                // Do nothing, but close the dialog
-                dialog.dismiss();
-                View rootView;
-                //Bitmap bitmap = takeScreenshot(rootView);
-            }
-        });
-
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                // Do nothing
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        showDialog(alertDialog);
-        
+        MainActivity mainActivity = new MainActivity();
+        Bitmap bmp = mainActivity.findLatestImage();
+        System.out.println("Is bitmap null?: " + bmp==null);
+        Intent intent = createIntentWithBitmap(bmp, this);
+        startActivityAndCollapse(intent);
     }
 
-    public Bitmap takeScreenshot(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
+    public Intent createIntentWithBitmap(Bitmap bmpInput, Context context){
+        Intent intent = new Intent(context, MainActivity.class);
+
+        //Convert to byte array
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmpInput.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        System.out.println("Byte Array Size: " + byteArray.length);
+
+        intent.putExtra("image",byteArray);
+        return intent;
     }
 
     @Override

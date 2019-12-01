@@ -2,6 +2,7 @@ package com.example.cropshot;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
+import android.database.Cursor;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,6 +40,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -69,26 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        // Request user access permissions
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (shouldShowRequestPermissionRationale(
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // Explain to the user why we need to read the contacts
-            }
-
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-
-            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-            // app-defined int constant that should be quite unique
+        if (getIntent().getByteArrayExtra("image") != null){
+            System.out.println("Bitmap array successfully sent");
+            byte[] byteArray = getIntent().getByteArrayExtra("image");
+            preCrop = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         }
-
-        // ------------ TEMPLATE CODE --------------
 
         if(SettingsSingleton.getInstance().getDarkMode())
         {
@@ -125,12 +115,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-
-        // ------------ TEMPLATE CODE --------------
-
         // Get access to the Cropping image image view, and store it in a variable
         imageView = (ImageView) findViewById(R.id.CroppingImg);
-
     }
 
     public void onGalleryClick(View v) {
@@ -259,6 +245,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public Bitmap findLatestImage(){
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        int imagesCount= path.listFiles().length; // get the list of images from folder
+        System.out.println("imagesCount: " + imagesCount); //Outputs number of images in downloads directory
+        Bitmap bmp = BitmapFactory.decodeFile(path.listFiles()[imagesCount - 1].getAbsolutePath());
+        return bmp;
+    }
+
+
     public void progressImageScan()
     {
         // If we aren't filescanning don't do this logic
@@ -310,7 +305,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Only preform operations if we know that our result has successfully happened
         if (resultCode == RESULT_OK) {
             String postcropURIreturn = getIntent().getStringExtra("UriPostCropReset");
