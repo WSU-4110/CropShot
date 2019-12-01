@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
 
-import com.example.cropshot.ui.SettingsActivity;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -27,6 +25,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -58,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
 
         // ------------ TEMPLATE CODE --------------
 
+        if(SettingsSingleton.getInstance().getDarkMode())
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            setTheme(R.style.darktheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -87,31 +92,37 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+
         // ------------ TEMPLATE CODE --------------
 
         // Get access to the Cropping image image view, and store it in a variable
         imageView = (ImageView) findViewById(R.id.CroppingImg);
-    }
 
+    }
 
     public void onGalleryClick(View v) {
         Load loadObject = new Load();
         loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
 
-
     }
-
-
 
     public void onCropClick(View v) {
         try {
-            // Create firebase object
-            FirebaseDetection firebaseDetectionObject = new FirebaseDetection(this);
+            // If the user disables the useML functionality don't do this check
+            if(SettingsSingleton.getInstance().getUseML())
+            {
+                // Create firebase object
+                FirebaseDetection firebaseDetectionObject = new FirebaseDetection(this);
 
-            // Create a small version of the bitmap at the top of the screen
-            // (Where the words instagram are) to scan for the text "instagram"
-            Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
-            firebaseDetectionObject.runTextDetection(instaCrop);
+                // Create a small version of the bitmap at the top of the screen
+                // (Where the words instagram are) to scan for the text "instagram"
+                Bitmap instaCrop = Bitmap.createBitmap(bitMap, 0, 0, bitMap.getWidth(), 200);
+                firebaseDetectionObject.runTextDetection(instaCrop);
+            }
+            else
+            {
+                cropIfImageDetected();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,13 +141,25 @@ public class MainActivity extends AppCompatActivity {
 
         imageView.setImageBitmap(croppedMap);
 
+        // Get a compressed bitmap and pass it into startPostCrop
+
+        startPostCrop(compressBitmap(croppedMap));
+    }
+
+    private void startPostCrop(byte[] bytes)
+    {
         Intent postcrop = new Intent(this, PostCropActivity.class);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] bytes = stream.toByteArray();
         postcrop.putExtra("cropBytes", bytes);
         postcrop.putExtra("precropuri", contentURI.toString());
         startActivity(postcrop);
+    }
+
+    private byte[] compressBitmap(Bitmap mapToCompress)
+    {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] bytes = stream.toByteArray();
+        return bytes;
     }
 
     @Override
