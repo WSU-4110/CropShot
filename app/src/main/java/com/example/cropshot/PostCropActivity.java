@@ -21,6 +21,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.DialogFragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -41,6 +42,13 @@ public class PostCropActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
+
+        if(SettingsSingleton.getInstance().getDarkMode())
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            setTheme(R.style.darktheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_save);
         setPostCropImage();
