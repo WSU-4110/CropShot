@@ -8,6 +8,8 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import android.content.Intent;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class MyTileService extends TileService {
 
     @Override
@@ -24,6 +26,7 @@ public class MyTileService extends TileService {
     public Intent createIntentWithBitmap(Context context, Bitmap bmpInput){
         System.out.println("Starting createIntentWithBitmap");
         Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
 
         //Convert to byte array
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
