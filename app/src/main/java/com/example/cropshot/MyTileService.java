@@ -16,25 +16,17 @@ public class MyTileService extends TileService {
     public void onClick() {
         super.onClick();
         System.out.println("Starting myTileService.onClick");
-        MainActivity mainActivity = new MainActivity();
-        Bitmap bmp = mainActivity.findLatestImage();
-        Intent intent = createIntentWithBitmap(this, bmp);
+        Intent intent = createIntent(this);
         System.out.println("Starting intent");
         startActivityAndCollapse(intent);
     }
 
-    public Intent createIntentWithBitmap(Context context, Bitmap bmpInput){
-        System.out.println("Starting createIntentWithBitmap");
+    public Intent createIntent(Context context){
+        System.out.println("Starting createIntent");
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-
-        //Convert to byte array
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmpInput.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        System.out.println("Byte Array Size: " + byteArray.length);
-
-        intent.putExtra("image",byteArray);
+        Integer code = 10;
+        intent.putExtra("tileServiceCode", code);
         return intent;
     }
 

@@ -82,35 +82,28 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         //If user uses tile service to pass through most recent photo
-        if (getIntent().getByteArrayExtra("image") != null) {
-            System.out.println("Bitmap array successfully sent");
-            byte[] byteArray = getIntent().getByteArrayExtra("image");
-            preCrop = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        if (getIntent().getIntExtra("tileServiceCode", 0) == 10) {
+            System.out.println("TileService Code successfully sent");
+            contentURI = findLatestImage();
+            try {
+                bitMap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+            }
+            catch (IOException e){
+                System.out.println("Error: " + e);
+            }
+
         }
 
         //Resets view back to activity_main.xml
         setContentView(R.layout.activity_main);
-        // Get access to the Cropping image image view, and store it in a variable
-        imageView = (ImageView) findViewById(R.id.CroppingImg);
-        Intent iin = getIntent();
-        Bundle b = iin.getExtras();
 
-        if (b != null){
-            System.out.println("Bitmap array successfully sent");
-            byte[] byteArray = getIntent().getByteArrayExtra("image");
-            preCrop = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            imageView.setImageBitmap(preCrop);
-
-        }
-        else System.out.println("isn't working");
 
         //If user uses tile service to pass through newest photo, preCrop will
         //Change from null value to != null.
         //If so, set imageView to this passed through value
-        if (preCrop != null){
+        if (contentURI != null){
             imageView = (ImageView)findViewById(R.id.CroppingImg);  //imageView
-            System.out.println("A");
-            imageView.setImageBitmap(preCrop);
+            imageView.setImageURI(contentURI);
         }
 
         b_settings = (Button) findViewById(R.id.Settings);
@@ -267,13 +260,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public Bitmap findLatestImage(){
+    private Uri findLatestImage(){
         System.out.println("Starting findLatestImage");
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        int imagesCount= path.listFiles().length; // get the list of images from folder
+        int imagesCount= path.listFiles().length; // get the number of images from folder
+        Uri uri = Uri.fromFile(new File(path.listFiles()[imagesCount - 1].getAbsolutePath()));
+
         System.out.println("imagesCount: " + imagesCount); //Outputs number of images in downloads directory
-        Bitmap bmp = BitmapFactory.decodeFile(path.listFiles()[imagesCount - 1].getAbsolutePath());
-        return bmp;
+        return uri;
     }
 
 
