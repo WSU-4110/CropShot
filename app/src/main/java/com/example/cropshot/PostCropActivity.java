@@ -96,8 +96,8 @@ public class PostCropActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
-                    Save saver = new Save();
-                    saver.saveAsNew(cropMap);
+                    File saveFile = Save.mainDirectory(PostCropActivity.this);
+                    File file = Save.saver(cropMap,saveFile);
                     Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
                     startActivity(mainactivity);
                 }
@@ -115,6 +115,8 @@ public class PostCropActivity extends AppCompatActivity{
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    //public void onOverwriteClick//
 
 
 
