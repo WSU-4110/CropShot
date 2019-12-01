@@ -2,6 +2,7 @@ package com.example.cropshot;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Color;
+import android.database.Cursor;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,12 +40,15 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
+    public static final int TILESERVICE_IMAGE_REQUEST = 21;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 30;
 
     private Button button;
@@ -69,27 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        // Request user access permissions
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (shouldShowRequestPermissionRationale(
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // Explain to the user why we need to read the contacts
-            }
-
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-
-            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-            // app-defined int constant that should be quite unique
-
-        }
-
-        // ------------ TEMPLATE CODE --------------
-
         if(SettingsSingleton.getInstance().getDarkMode())
         {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -97,7 +81,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
+        //If user uses tile service to pass through most recent photo
+        if (getIntent().getIntExtra("tileServiceCode", 0) == 10) {
+            System.out.println("TileService Code successfully sent");
+            contentURI = findLatestImage();
+            try {
+                bitMap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+            }
+            catch (IOException e){
+                System.out.println("Error: " + e);
+            }
+
+        }
+
+        //Resets view back to activity_main.xml
         setContentView(R.layout.activity_main);
+
+
+        //If user uses tile service to pass through newest photo, preCrop will
+        //Change from null value to != null.
+        //If so, set imageView to this passed through value
+        if (contentURI != null){
+            imageView = (ImageView)findViewById(R.id.CroppingImg);  //imageView
+            imageView.setImageURI(contentURI);
+        }
 
         b_settings = (Button) findViewById(R.id.Settings);
         b_settings.setOnClickListener(new View.OnClickListener() {
@@ -124,12 +131,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
-
-        // ------------ TEMPLATE CODE --------------
-
-        // Get access to the Cropping image image view, and store it in a variable
-        imageView = (ImageView) findViewById(R.id.CroppingImg);
 
     }
 
@@ -169,7 +170,11 @@ public class MainActivity extends AppCompatActivity {
             // if it doesn't crop continue the scan, otherwise save it and continue the scan
 
             if(croppedMap == null)
+            {
+                // First add 1 to the file position
+                filePos++;
                 progressImageScan();
+            }
 
             System.out.println("Image detected during image scan");
 
@@ -256,6 +261,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private Uri findLatestImage(){
+        System.out.println("Starting findLatestImage");
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        int imagesCount= path.listFiles().length; // get the number of images from folder
+        Uri uri = Uri.fromFile(new File(path.listFiles()[imagesCount - 1].getAbsolutePath()));
+
+        System.out.println("imagesCount: " + imagesCount); //Outputs number of images in downloads directory
+        return uri;
+    }
+
+
     // Call this function when the scan detects a non-instagram image
     public void scannedNonInstagramImage()
     {
@@ -312,9 +328,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Only preform operations if we know that our result has successfully happened
-        if (resultCode == RESULT_OK) {
+        if (requestCode == TILESERVICE_IMAGE_REQUEST){
+            try {
+                System.out.println("ImageView?");
+                // Set our imageView to the bitmap from the tile service
+                imageView = new ImageView(this);
+                imageView.setImageBitmap(preCrop);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        else if (resultCode == RESULT_OK) {
             String postcropURIreturn = getIntent().getStringExtra("UriPostCropReset");
             if (postcropURIreturn != null) {
                 try {
