@@ -48,6 +48,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     public static final int IMAGE_GALLERY_REQUEST = 20;
+    public static final int TILESERVICE_IMAGE_REQUEST = 21;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 30;
 
     private Button button;
@@ -73,12 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (getIntent().getByteArrayExtra("image") != null){
-            System.out.println("Bitmap array successfully sent");
-            byte[] byteArray = getIntent().getByteArrayExtra("image");
-            preCrop = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-
-        }
 
         if(SettingsSingleton.getInstance().getDarkMode())
         {
@@ -87,7 +82,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
+        //If user uses tile service to pass through most recent photo
+        if (getIntent().getByteArrayExtra("image") != null) {
+            System.out.println("Bitmap array successfully sent");
+            byte[] byteArray = getIntent().getByteArrayExtra("image");
+            preCrop = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        }
+
+        //Resets view back to activity_main.xml
         setContentView(R.layout.activity_main);
+
+        //If user uses tile service to pass through newest photo, preCrop will
+        //Change from null value to != null.
+        //If so, set imageView to this passed through value
+        if (preCrop != null){
+            imageView = (ImageView)findViewById(R.id.CroppingImg);  //imageView
+            System.out.println("A");
+            imageView.setImageBitmap(preCrop);
+        }
 
         b_settings = (Button) findViewById(R.id.Settings);
         b_settings.setOnClickListener(new View.OnClickListener() {
@@ -114,9 +126,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
-        // Get access to the Cropping image image view, and store it in a variable
-        imageView = (ImageView) findViewById(R.id.CroppingImg);
     }
 
     public void onGalleryClick(View v) {
@@ -246,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public Bitmap findLatestImage(){
+        System.out.println("Starting findLatestImage");
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         int imagesCount= path.listFiles().length; // get the list of images from folder
         System.out.println("imagesCount: " + imagesCount); //Outputs number of images in downloads directory
@@ -306,7 +316,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Only preform operations if we know that our result has successfully happened
-        if (resultCode == RESULT_OK) {
+        if (requestCode == TILESERVICE_IMAGE_REQUEST){
+            try {
+                System.out.println("ImageView?");
+                // Set our imageView to the bitmap from the tile service
+                imageView = new ImageView(this);
+                imageView.setImageBitmap(preCrop);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        else if (resultCode == RESULT_OK) {
             String postcropURIreturn = getIntent().getStringExtra("UriPostCropReset");
             if (postcropURIreturn != null) {
                 try {

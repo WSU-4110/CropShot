@@ -2,20 +2,10 @@ package com.example.cropshot;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-import android.content.DialogInterface;
-import android.app.AlertDialog;
-import android.app.Activity;
-import android.view.Window;
-
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
 import android.content.Intent;
 
 public class MyTileService extends TileService {
@@ -23,14 +13,16 @@ public class MyTileService extends TileService {
     @Override
     public void onClick() {
         super.onClick();
+        System.out.println("Starting myTileService.onClick");
         MainActivity mainActivity = new MainActivity();
         Bitmap bmp = mainActivity.findLatestImage();
-        System.out.println("Is bitmap null?: " + bmp==null);
-        Intent intent = createIntentWithBitmap(bmp, this);
+        Intent intent = createIntentWithBitmap(this, bmp);
+        System.out.println("Starting intent");
         startActivityAndCollapse(intent);
     }
 
-    public Intent createIntentWithBitmap(Bitmap bmpInput, Context context){
+    public Intent createIntentWithBitmap(Context context, Bitmap bmpInput){
+        System.out.println("Starting createIntentWithBitmap");
         Intent intent = new Intent(context, MainActivity.class);
 
         //Convert to byte array
