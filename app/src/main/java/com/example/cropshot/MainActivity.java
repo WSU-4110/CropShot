@@ -73,12 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (getIntent().getByteArrayExtra("image") != null){
-            System.out.println("Bitmap array successfully sent");
-            byte[] byteArray = getIntent().getByteArrayExtra("image");
-            preCrop = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-        }
 
         if(SettingsSingleton.getInstance().getDarkMode())
         {
@@ -88,6 +83,19 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Get access to the Cropping image image view, and store it in a variable
+        imageView = (ImageView) findViewById(R.id.CroppingImg);
+        Intent iin = getIntent();
+        Bundle b = iin.getExtras();
+
+        if (b != null){
+            System.out.println("Bitmap array successfully sent");
+            byte[] byteArray = getIntent().getByteArrayExtra("image");
+            preCrop = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            imageView.setImageBitmap(preCrop);
+
+        }
+        else System.out.println("isn't working");
 
         b_settings = (Button) findViewById(R.id.Settings);
         b_settings.setOnClickListener(new View.OnClickListener() {
@@ -115,8 +123,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        // Get access to the Cropping image image view, and store it in a variable
-        imageView = (ImageView) findViewById(R.id.CroppingImg);
+
     }
 
     public void onGalleryClick(View v) {
