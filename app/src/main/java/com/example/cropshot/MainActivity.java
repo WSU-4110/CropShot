@@ -170,7 +170,11 @@ public class MainActivity extends AppCompatActivity {
             // if it doesn't crop continue the scan, otherwise save it and continue the scan
 
             if(croppedMap == null)
+            {
+                // First add 1 to the file position
+                filePos++;
                 progressImageScan();
+            }
 
             System.out.println("Image detected during image scan");
 
@@ -179,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
             Save save = new Save();
 
             save.saveAsNew(croppedMap);
+
+            // First add 1 to the file position
+            filePos++;
 
             progressImageScan();
         }
@@ -196,13 +203,6 @@ public class MainActivity extends AppCompatActivity {
 
             startPostCrop(compressBitmap(croppedMap));
         }
-    }
-
-    // The function called when firebase fails to detect an instagram image
-    public void imageNotDetected()
-    {
-        if(!imageScanning)
-            return;
     }
 
     public void onScanClick(View v)
@@ -256,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         System.out.println("We're starting the image scan");
+
         progressImageScan();
 
     }
@@ -271,14 +272,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void progressImageScan()
+    // Call this function when the scan detects a non-instagram image
+    public void scannedNonInstagramImage()
+    {
+        // First add 1 to the file position
+        filePos++;
+        progressImageScan();
+    }
+
+    private void progressImageScan()
     {
         // If we aren't filescanning don't do this logic
         if(!imageScanning)
             return;
-
-        // First add 1 to the file position
-        filePos++;
 
         // Then check if we've reached the last image (In this case, filePos is 1 greater than the size
         if(filePos >= filesScanned.size())
