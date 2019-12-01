@@ -83,8 +83,8 @@
         android:id="@+id/ManualCrop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="170dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="144dp"
         android:text="Manual Crop"
         app:layout_constraintEnd_toEndOf="@+id/nav_host_fragment"
         app:layout_constraintTop_toTopOf="@+id/nav_host_fragment" />
