@@ -39,6 +39,8 @@ public class PostCropActivity extends AppCompatActivity{
     Button saveNew;
     Button overwrite;
     Button Discard;
+    Button MCROP;
+    Uri contentURI;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -52,6 +54,14 @@ public class PostCropActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_save);
         setPostCropImage();
+
+        MCROP = (Button) findViewById(R.id.ManualCrop);
+        MCROP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openManualCrop();
+            }
+        });
 
     }
 
@@ -77,7 +87,6 @@ public class PostCropActivity extends AppCompatActivity{
             public void onClick(DialogInterface dialog, int which) {
                 try {
                     Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
-                    mainactivity.putExtra("UriPostCropReset",precropuri);
                     startActivity(mainactivity);
                 }
                 catch(Exception e) {
@@ -105,7 +114,8 @@ public class PostCropActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
-                    saveNewImage(cropMap);
+                    File saveFile = Save.mainDirectory(PostCropActivity.this);
+                    File file = Save.saver(cropMap,saveFile);
                     Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
                     startActivity(mainactivity);
                 }
@@ -124,29 +134,16 @@ public class PostCropActivity extends AppCompatActivity{
         dialog.show();
     }
 
-    protected void saveNewImage(Bitmap bitmap) {
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-" + n + ".jpg";
-        File file = new File(myDir, fname);
-        while (file.exists()) {
-            fname = fname+1;
-        }
-        Log.i("LOAD", root + fname);
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    //public void onOverwriteClick//
+
+
+
+    public void openManualCrop(){
+        Intent intent = new Intent(this,ManualCrop.class);
+
+        //if(contentURI != null)
+          //  intent.putExtra("imageUri", contentURI.toString());
+
+        startActivity(intent);
     }
-
-
-    
 }
