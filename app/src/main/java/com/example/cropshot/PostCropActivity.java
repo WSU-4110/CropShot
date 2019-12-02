@@ -115,7 +115,7 @@ public class PostCropActivity extends AppCompatActivity{
             public void onClick(DialogInterface dialog, int which) {
                 try {
                     File saveFile = Save.mainDirectory(PostCropActivity.this);
-                    File file = Save.saver(cropMap,saveFile);
+                    File file = Save.saver(cropMap,saveFile, PostCropActivity.this);
                     Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
                     startActivity(mainactivity);
                 }
