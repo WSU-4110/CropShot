@@ -205,7 +205,8 @@ public class MainActivity extends AppCompatActivity {
 
             Save save = new Save();
 
-            save.saveAsNew(croppedMap);
+            File saveFile = Save.mainDirectory(MainActivity.this);
+            save.saver(croppedMap, saveFile);
 
             // First add 1 to the file position
             filePos++;
