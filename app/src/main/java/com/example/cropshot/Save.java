@@ -3,6 +3,7 @@ package com.example.cropshot;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -57,8 +58,18 @@ public class Save {
 
 
 
-    public void Overwrite(Bitmap finalBitmap)
+    public void Overwrite(Bitmap finalBitmap, Uri oglocation)
     {
+        File dir = new File(oglocation.getPath());
+        try {
+            FileOutputStream fout = new FileOutputStream(dir);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fout);
+            fout.flush();
+            fout.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
