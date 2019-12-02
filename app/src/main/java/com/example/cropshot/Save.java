@@ -49,18 +49,7 @@ public class Save {
             bm.compress(Bitmap.CompressFormat.JPEG, 85, fout);
 
             // Required to scan and allow the image to appear within the gallery
-            //mediaScanFile(context, file);
-            MediaScannerConnection.scanFile(
-                    context.getApplicationContext(),
-                    new String[]{file.getAbsolutePath()},
-                    null,
-                    new MediaScannerConnection.OnScanCompletedListener() {
-                        @Override
-                        public void onScanCompleted(String path, Uri uri) {
-                            Log.v("grokkingandroid",
-                                    "file " + path + " was scanned seccessfully: " + uri);
-                        }
-                    });
+            mediaScanFile(context, file);
 
             fout.flush();
             fout.close();
@@ -74,6 +63,17 @@ public class Save {
 
     private static void mediaScanFile (Context context, File file)
     {
+        MediaScannerConnection.scanFile(
+                context.getApplicationContext(),
+                new String[]{file.getAbsolutePath()},
+                null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.v("grokkingandroid",
+                                "file " + path + " was scanned seccessfully: " + uri);
+                    }
+                });
 
     }
 
