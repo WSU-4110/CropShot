@@ -1,9 +1,11 @@
 package com.example.cropshot;
 
 import android.content.Context;
+
 import android.graphics.Bitmap;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
+import android.view.View;
 import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import android.content.Intent;
@@ -28,6 +30,12 @@ public class MyTileService extends TileService {
         Integer code = 10;
         intent.putExtra("tileServiceCode", code);
         return intent;
+    }
+
+    private void takeScreenshot(View v) {
+        View screenView = v.getRootView();
+
+
     }
 
     @Override
