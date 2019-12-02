@@ -59,7 +59,10 @@ public class FirebaseDetection {
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
 
         if (blocks.size() == 0)
+        {
+            activity.scannedNonInstagramImage();
             return;
+        }
 
         for (int i = 0; i < blocks.size(); i++) {
 
@@ -79,6 +82,7 @@ public class FirebaseDetection {
                 }
             }
         }
+        System.out.println("Non instagram image detected!");
         // If we don't find the word instagram we still want to progress filescanning
         activity.scannedNonInstagramImage();
     }

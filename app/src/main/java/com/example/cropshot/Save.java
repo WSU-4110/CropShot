@@ -3,6 +3,8 @@ package com.example.cropshot;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -26,7 +28,7 @@ public class Save {
 
 
     public static File mainDirectory(Context context) {
-        File mainDir = new File ("/sdcard/savepics");
+        File mainDir = new File ("/sdcard/Pictures");
         File mainDirec = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "screenshotsaver");
         if (!mainDir.exists()) {
             if (mainDir.mkdirs()) Log.e("Create Directory", "Save Directory Created: " + mainDir);
@@ -34,7 +36,7 @@ public class Save {
         return mainDir;
     }
 
-    public static File saver(Bitmap bm, File saveFilePath) {
+    public static File saver(Bitmap bm, File saveFilePath, Context context) {
         File dir = new File(saveFilePath.getAbsolutePath());
         if (!dir.exists()) dir.mkdirs();
         Random generator = new Random();
@@ -45,6 +47,21 @@ public class Save {
         try {
             FileOutputStream fout = new FileOutputStream(file);
             bm.compress(Bitmap.CompressFormat.JPEG, 85, fout);
+
+            // Required to scan and allow the image to appear within the gallery
+            //mediaScanFile(context, file);
+            MediaScannerConnection.scanFile(
+                    context.getApplicationContext(),
+                    new String[]{file.getAbsolutePath()},
+                    null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(String path, Uri uri) {
+                            Log.v("grokkingandroid",
+                                    "file " + path + " was scanned seccessfully: " + uri);
+                        }
+                    });
+
             fout.flush();
             fout.close();
         }
@@ -52,6 +69,11 @@ public class Save {
             e.printStackTrace();
         }
         return file;
+
+    }
+
+    private static void mediaScanFile (Context context, File file)
+    {
 
     }
 
