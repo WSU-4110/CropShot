@@ -79,12 +79,13 @@ public class Save {
 
 
 
-    public void Overwrite(Bitmap finalBitmap, Uri oglocation)
+    public void overwrite(Context context, Bitmap finalBitmap, Uri oglocation)
     {
         File dir = new File(oglocation.getPath());
         try {
             FileOutputStream fout = new FileOutputStream(dir);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fout);
+            mediaScanFile(context, dir);
             fout.flush();
             fout.close();
         }
