@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -68,6 +69,23 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        MLswitch  = findViewById(R.id.MLswitch);
+
+        MLswitch.setChecked(SettingsSingleton.getInstance().getUseML());
+
+        MLswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(!isChecked) {
+                    SettingsSingleton.getInstance().setUseML(false);
+                }
+
+                else
+                    SettingsSingleton.getInstance().setUseML(true);
+            }
+        });
+
     }
 
     public void openGOBACK(){

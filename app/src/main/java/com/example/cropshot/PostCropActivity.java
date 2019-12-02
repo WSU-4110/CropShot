@@ -39,6 +39,8 @@ public class PostCropActivity extends AppCompatActivity{
     Button saveNew;
     Button overwrite;
     Button Discard;
+    Button MCROP;
+    Uri contentURI;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -52,6 +54,14 @@ public class PostCropActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_save);
         setPostCropImage();
+
+        MCROP = (Button) findViewById(R.id.ManualCrop);
+        MCROP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openManualCrop();
+            }
+        });
 
     }
 
@@ -128,6 +138,12 @@ public class PostCropActivity extends AppCompatActivity{
 
 
 
+    public void openManualCrop(){
+        Intent intent = new Intent(this,ManualCrop.class);
 
-    
+        //if(contentURI != null)
+          //  intent.putExtra("imageUri", contentURI.toString());
+
+        startActivity(intent);
+    }
 }
