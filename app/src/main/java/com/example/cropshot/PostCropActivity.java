@@ -138,6 +138,8 @@ public class PostCropActivity extends AppCompatActivity{
                 try {
                     Save newsave = new Save();
                     newsave.overwrite(PostCropActivity.this, cropMap, precropuri);
+                    Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
+                    startActivity(mainactivity);
                 }
                 catch(Exception e) {
                     e.printStackTrace();
