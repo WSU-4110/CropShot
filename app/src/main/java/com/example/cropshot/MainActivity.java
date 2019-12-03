@@ -192,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
             croppedMap = cropImg.cropImage(fileUri, this);
             // if it doesn't crop continue the scan, otherwise save it and continue the scan
 
+            System.out.println("Image detected during image scan" + filePos);
+
             if(croppedMap == null)
             {
                 // First add 1 to the file position
@@ -199,14 +201,12 @@ public class MainActivity extends AppCompatActivity {
                 progressImageScan();
             }
 
-            System.out.println("Image detected during image scan");
-
             imageView.setImageBitmap(croppedMap);
 
             Save save = new Save();
 
             File saveFile = Save.mainDirectory(MainActivity.this);
-            save.saver(croppedMap, saveFile);
+            save.saver(croppedMap, saveFile, MainActivity.this);
 
             // First add 1 to the file position
             filePos++;
@@ -266,6 +266,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Find all image URLs in the gallery
         Load load = new Load();
+
+        System.out.println("We're starting the image scan before the load!");
 
         filesScanned = load.scanGallery(this);
         filePos = 0;
