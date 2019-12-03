@@ -2,6 +2,7 @@ package com.example.cropshot;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Random;
 
 public class Save {
@@ -79,12 +81,22 @@ public class Save {
 
 
 
-    public void Overwrite(Bitmap finalBitmap, Uri oglocation)
+    public void overwrite(Context context, Bitmap finalBitmap, Uri oglocation)
     {
-        File dir = new File(oglocation.getPath());
+
+        String path = null;
+        String[] proj = { MediaStore.MediaColumns.DATA };
+        Cursor cursor = context.getContentResolver().query(oglocation, proj, null, null, null);
+        if (cursor.moveToFirst()) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            path = cursor.getString(column_index);
+        }
+        cursor.close();
+        File dir = new File(path);
         try {
             FileOutputStream fout = new FileOutputStream(dir);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fout);
+            mediaScanFile(context, dir);
             fout.flush();
             fout.close();
         }

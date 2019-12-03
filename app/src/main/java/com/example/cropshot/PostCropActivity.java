@@ -136,7 +136,10 @@ public class PostCropActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
-                    File saveFile = Save.mainDirectory(PostCropActivity.this);
+                    Save newsave = new Save();
+                    newsave.overwrite(PostCropActivity.this, cropMap, precropuri);
+                    Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
+                    startActivity(mainactivity);
                 }
                 catch(Exception e) {
                     e.printStackTrace();
