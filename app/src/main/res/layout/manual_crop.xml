@@ -26,11 +26,12 @@
 
         <Button
             android:id="@+id/b_browser"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/bg_round"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/buttoncolor"
             android:onClick="onGalleryClick"
-             />
+            android:text="Gallery"
+            android:textColor="#fff" />
 
         <Space
             android:layout_width="20dp"
