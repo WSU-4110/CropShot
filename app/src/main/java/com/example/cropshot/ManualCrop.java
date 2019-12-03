@@ -48,7 +48,7 @@ public class ManualCrop extends AppCompatActivity {
         });
 
         browser = findViewById(R.id.b_browser);
-        btReset = findViewById(R.id.bt_reset);
+        //btReset = findViewById(R.id.bt_reset);
         imageView = findViewById(R.id.image_view);
 
         btReset.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +71,6 @@ public class ManualCrop extends AppCompatActivity {
     public void onGalleryClick(View v) {
         Load loadObject = new Load();
         loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
-
 
     }
 
