@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -71,8 +72,8 @@ public class ManualCrop extends AppCompatActivity {
         Bundle extras = intent.getExtras();
         if(extras != null)
         {
-            Uri myUri = Uri.parse(extras.getString("imageUri"));
-            startCrop(myUri);
+            uri = Uri.parse(extras.getString("imageUri"));
+            startCrop(uri);
         }
 
     }
@@ -135,7 +136,7 @@ public class ManualCrop extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 try {
                     File saveFile = Save.mainDirectory(ManualCrop.this);
-                    Bitmap cropMap = MediaStore.Images.Media.getBitmap(ManualCrop.this.getContentResolver(), uri);
+                    Bitmap cropMap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
                     File file = Save.saver(cropMap,saveFile, ManualCrop.this);
                     Intent mainactivity = new Intent(ManualCrop.this,MainActivity.class);
                     startActivity(mainactivity);
