@@ -24,13 +24,13 @@
         android:layout_gravity="center"
         android:padding="20dp">
 
-        <ImageButton
+        <Button
             android:id="@+id/b_browser"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:background="@drawable/bg_round"
             android:onClick="onGalleryClick"
-            android:src="@drawable/ic_image" />
+             />
 
         <Space
             android:layout_width="20dp"
@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/buttoncolor"
             android:textColor="#fff"
+            android:onClick="onSaveNewClick"
             android:text="Save" />
 
     </LinearLayout>

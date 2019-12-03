@@ -28,11 +28,12 @@ import java.io.IOException;
 public class ManualCrop extends AppCompatActivity {
     public static final int IMAGE_GALLERY_REQUEST = 20;
 
-    ImageButton browser;
+    private Button browser;
     ImageView imageView;
     Uri uri;
     private Button button;
     private Button btsave;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
