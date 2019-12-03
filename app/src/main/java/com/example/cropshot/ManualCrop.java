@@ -33,6 +33,7 @@ public class ManualCrop extends AppCompatActivity {
     Uri uri;
     private Button button;
     private Button btsave;
+    Bitmap bitmap;
 
 
     @Override
@@ -129,14 +130,8 @@ public class ManualCrop extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 try {
                     File saveFile = Save.mainDirectory(ManualCrop.this);
-                    Bitmap cropMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), uri);
-                    try {
-                        cropMap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), uri);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    File file = Save.saver(cropMap,saveFile, ManualCrop.this);
+                    Bitmap cropMap = MediaStore.Images.Media.getBitmap(ManualCrop.this.getContentResolver(), uri);
+                    //File file = Save.saver(cropMap,saveFile, ManualCrop.this);
                     Intent mainactivity = new Intent(ManualCrop.this,MainActivity.class);
                     startActivity(mainactivity);
                 }
