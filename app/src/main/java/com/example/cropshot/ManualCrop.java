@@ -120,6 +120,11 @@ public class ManualCrop extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onBackClick(View v) {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
+
     public void onSaveNewClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -131,7 +136,7 @@ public class ManualCrop extends AppCompatActivity {
                 try {
                     File saveFile = Save.mainDirectory(ManualCrop.this);
                     Bitmap cropMap = MediaStore.Images.Media.getBitmap(ManualCrop.this.getContentResolver(), uri);
-                    //File file = Save.saver(cropMap,saveFile, ManualCrop.this);
+                    File file = Save.saver(cropMap,saveFile, ManualCrop.this);
                     Intent mainactivity = new Intent(ManualCrop.this,MainActivity.class);
                     startActivity(mainactivity);
                 }

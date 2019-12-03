@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:text="BACK"
             android:background="?attr/buttoncolor"
+            android:onClick="onBackClick"
             android:textColor="#fff"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="30dp"/>
