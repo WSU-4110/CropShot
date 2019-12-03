@@ -327,7 +327,14 @@ public class MainActivity extends AppCompatActivity {
             String filePath = filesScanned.get(filePos);
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
-            callFirebase(bitmap);
+            if(SettingsSingleton.getInstance().getUseML())
+            {
+                callFirebase(bitmap);
+            }
+            else
+            {
+                cropIfImageDetected();
+            }
         }
 
     }
