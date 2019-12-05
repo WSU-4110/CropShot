@@ -8,6 +8,7 @@ public class CropTest {
 
     @Test
     public void checkColor() {
+
     }
 
     @Test

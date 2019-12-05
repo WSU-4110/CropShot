@@ -54,4 +54,12 @@ public class MainActivityTest {
         //Unit testing if app tries to redirect with an invalid context for the intent
         assertFalse(mainActivity.openSettings());
     }
+
+    @Test
+    public void compressBitmap() {
+    }
+
+    @Test
+    public void progressImageScan() {
+    }
 }
