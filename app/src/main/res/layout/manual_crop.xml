@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/buttoncolor"
-            android:onClick="onGalleryClick"
-            android:text="Gallery"
+            android:onClick="onBackClick"
+            android:text="BACK"
             android:textColor="#fff" />
 
         <Space
@@ -41,9 +41,9 @@
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="BACK"
+            android:text="OVERWRITE"
             android:background="?attr/buttoncolor"
-            android:onClick="onBackClick"
+            android:onClick="onManualOverwriteClick"
             android:textColor="#fff"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="30dp"/>
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/buttoncolor"
             android:textColor="#fff"
-            android:onClick="onSaveNewClick"
+            android:onClick="onManualSaveNewClick"
             android:text="Save" />
 
     </LinearLayout>

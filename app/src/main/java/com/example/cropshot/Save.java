@@ -106,5 +106,9 @@ public class Save {
 
     }
 
+    public void savepusher(File file, Bitmap bm, Context context) {
+
+    }
+
 
 }

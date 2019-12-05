@@ -64,7 +64,7 @@ public class ManualCrop extends AppCompatActivity {
         btsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSaveNewClick(v);
+                onManualSaveNewClick(v);
             }
         });
 
@@ -78,11 +78,7 @@ public class ManualCrop extends AppCompatActivity {
 
     }
 
-    public void onGalleryClick(View v) {
-        Load loadObject = new Load();
-        loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
 
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -126,11 +122,41 @@ public class ManualCrop extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void onSaveNewClick(View v) {
+    public void onManualSaveNewClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Are You Sure?");
         builder.setMessage("Do you want to save new?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    File saveFile = Save.mainDirectory(ManualCrop.this);
+                    Bitmap cropMap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                    File file = Save.saver(cropMap,saveFile, ManualCrop.this);
+                    Intent mainactivity = new Intent(ManualCrop.this,MainActivity.class);
+                    startActivity(mainactivity);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void onManualOverwriteClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Are You Sure?");
+        builder.setMessage("Do you want to overwrite?");
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
