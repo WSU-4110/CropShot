@@ -60,11 +60,11 @@ public class MainActivity extends AppCompatActivity {
     Uri contentURI;
     Uri postcropURI;
     Bitmap preCrop;
-    Bitmap croppedMap;
+    public Bitmap croppedMap;
 
     // Used for image scanning
     // Tracks whether or not we're preforming the image scan operation
-    boolean imageScanning;
+    public boolean imageScanning;
     // Holds the URLs for all the images we scanned in
     ArrayList<String> filesScanned;
     // Holds the index or our position in the list
@@ -376,6 +376,8 @@ public class MainActivity extends AppCompatActivity {
 
     public byte[] compressBitmap(Bitmap mapToCompress)
     {
+        if(mapToCompress == null)
+            return null;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] bytes = stream.toByteArray();
