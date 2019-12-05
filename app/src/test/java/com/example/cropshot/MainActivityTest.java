@@ -70,5 +70,9 @@ public class MainActivityTest {
 
     @Test
     public void progressImageScan() {
+        MainActivity mainActivity = mock(MainActivity.class);
+        assertFalse(mainActivity.progressImageScan());
+        mainActivity.imageScanning = true;
+
     }
 }
