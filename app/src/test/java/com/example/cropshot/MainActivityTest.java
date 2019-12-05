@@ -10,10 +10,6 @@ import static org.mockito.Mockito.mock;
 public class MainActivityTest {
 
     @Test
-    public void onCreate() {
-    }
-
-    @Test
     public void onGalleryClick() {
         MainActivity mainActivity = mock(MainActivity.class);
         //Testing to make sure that crop only works if variable input is not null
@@ -33,18 +29,6 @@ public class MainActivityTest {
         mainActivity.croppedMap = mock(Bitmap.class);
 
         assertFalse(mainActivity.cropIfImageDetected());
-    }
-
-    @Test
-    public void onScanClick() {
-    }
-
-    @Test
-    public void scannedNonInstagramImage() {
-    }
-
-    @Test
-    public void onActivityResult() {
     }
 
     @Test
