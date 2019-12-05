@@ -24,7 +24,7 @@ public class FirebaseDetection {
         this.activity = activity;
     }
 
-    public void runTextDetection(Bitmap croppedMap)
+    public boolean runTextDetection(Bitmap croppedMap)
     {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(croppedMap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
@@ -50,9 +50,10 @@ public class FirebaseDetection {
                 }
 
         );
+        return true;
     }
 
-    private void processTextRecognitionResults(FirebaseVisionText texts) {
+    public boolean processTextRecognitionResults(FirebaseVisionText texts) {
         System.out.println(texts.getText());
 
         // Get all of the blocks in the current text
@@ -61,7 +62,7 @@ public class FirebaseDetection {
         if (blocks.size() == 0)
         {
             activity.scannedNonInstagramImage();
-            return;
+            return false;
         }
 
         for (int i = 0; i < blocks.size(); i++) {
@@ -77,7 +78,7 @@ public class FirebaseDetection {
                     if (checkForInstagramStr(str)) {
                         System.out.println("Instagram image detected!");
                         activity.cropIfImageDetected();
-                        return;
+                        return true;
                     }
                 }
             }
@@ -85,9 +86,10 @@ public class FirebaseDetection {
         System.out.println("Non instagram image detected!");
         // If we don't find the word instagram we still want to progress filescanning
         activity.scannedNonInstagramImage();
+        return false;
     }
 
-    boolean checkForInstagramStr(String str)
+    public boolean checkForInstagramStr(String str)
     {
         return (str.contains("instagram") ||
                 str.contains("instagam") ||
