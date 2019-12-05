@@ -157,13 +157,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onGalleryClick(View v) {
+    public boolean onGalleryClick(View v) {
+        if (v == null || this == null){
+            return false;
+        }
         Load loadObject = new Load();
         loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
-
+        return true;
     }
 
-    public void onCropClick(View v) {
+    public boolean onCropClick(View v) {
+        if (v == null || this == null){
+            return false;
+        }
         try {
             // If the user disables the useML functionality don't do this check
             if(SettingsSingleton.getInstance().getUseML())
@@ -178,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public boolean cropIfImageDetected()
@@ -428,17 +435,25 @@ public class MainActivity extends AppCompatActivity {
         startActivity(postcrop);
     }
 
-    public void openManualCrop(){
+    public boolean openManualCrop(){
+        //If package context being passed through is null
+        if (this == null)
+            return false;
         Intent intent = new Intent(this,ManualCrop.class);
 
         if(contentURI != null)
             intent.putExtra("imageUri", contentURI.toString());
         startActivity(intent);
+        return true;
     }
 
-    public void openSettings(){
+    public boolean openSettings(){
+        //If package context being passed through is null
+        if (this == null)
+            return false;
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+        return true;
     }
 }
 
