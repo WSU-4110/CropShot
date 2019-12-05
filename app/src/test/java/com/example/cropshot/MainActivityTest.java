@@ -1,5 +1,7 @@
 package com.example.cropshot;
 
+import android.graphics.Bitmap;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -27,6 +29,10 @@ public class MainActivityTest {
 
     @Test
     public void cropIfImageDetected() {
+        MainActivity mainActivity = mock(MainActivity.class);
+        mainActivity.croppedMap = mock(Bitmap.class);
+
+        assertFalse(mainActivity.cropIfImageDetected());
     }
 
     @Test
@@ -59,9 +65,16 @@ public class MainActivityTest {
 
     @Test
     public void compressBitmap() {
+        MainActivity mainActivity = mock(MainActivity.class);
+        Bitmap map = mock(Bitmap.class);
+        mainActivity.compressBitmap(map);
     }
 
     @Test
     public void progressImageScan() {
+        MainActivity mainActivity = mock(MainActivity.class);
+        assertFalse(mainActivity.progressImageScan());
+        mainActivity.imageScanning = true;
+
     }
 }
