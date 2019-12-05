@@ -7,10 +7,6 @@ import static org.junit.Assert.*;
 public class ManualCropTest {
 
     @Test
-    public void onGalleryClick() {
-    }
-
-    @Test
     public void startCrop() {
     }
 
