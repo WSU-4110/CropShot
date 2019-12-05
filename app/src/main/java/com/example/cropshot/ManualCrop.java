@@ -77,10 +77,11 @@ public class ManualCrop extends AppCompatActivity {
 
     }
 
-    public void onGalleryClick(View v) {
+    public boolean onGalleryClick(View v) {
         Load loadObject = new Load();
         loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
 
+        return true;
     }
 
     @Override
@@ -108,19 +109,21 @@ public class ManualCrop extends AppCompatActivity {
         }
     }
 
-    private void startCrop(Uri imageuri) {
+    public boolean startCrop(Uri imageuri) {
         CropImage.activity(imageuri)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setMultiTouchEnabled(true)
                 .start(this);
+            return true;
     }
 
-    public void openGOBACK(){
+    public boolean openGOBACK(){
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
+        return true;
     }
 
-    public void onSaveNewClick(View v) {
+    public boolean onSaveNewClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Are You Sure?");
@@ -148,5 +151,6 @@ public class ManualCrop extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        return true;
     }
 }
