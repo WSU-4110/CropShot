@@ -51,14 +51,12 @@ public class MainActivityTest {
     public void compressBitmap() {
         MainActivity mainActivity = mock(MainActivity.class);
         Bitmap map = mock(Bitmap.class);
-        mainActivity.compressBitmap(map);
+        assertNull(mainActivity.compressBitmap(map));
     }
 
     @Test
     public void progressImageScan() {
         MainActivity mainActivity = mock(MainActivity.class);
         assertFalse(mainActivity.progressImageScan());
-        mainActivity.imageScanning = true;
-
     }
 }
