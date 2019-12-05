@@ -26,6 +26,9 @@ public class FirebaseDetection {
 
     public boolean runTextDetection(Bitmap croppedMap)
     {
+        if(croppedMap == null)
+            return false;
+
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(croppedMap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
 
@@ -74,7 +77,7 @@ public class FirebaseDetection {
                     // The text detection is not perfect, especially in the case of an image that
                     // is slightly more blurry. When weird issues come up, we add a case to account
                     // for those, hence the "instagam"
-                    String str = elements.get(k).getText().toLowerCase();
+                    String str = elements.get(k).getText();
                     if (checkForInstagramStr(str)) {
                         System.out.println("Instagram image detected!");
                         activity.cropIfImageDetected();
@@ -91,6 +94,7 @@ public class FirebaseDetection {
 
     public boolean checkForInstagramStr(String str)
     {
+        str = str.toLowerCase();
         return (str.contains("instagram") ||
                 str.contains("instagam") ||
                 str.contains("nstagam") ||

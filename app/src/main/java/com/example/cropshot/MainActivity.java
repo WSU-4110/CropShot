@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void cropIfImageDetected()
+    public boolean cropIfImageDetected()
     {
         // If we're scanning images currently we want different logic
         if(imageScanning)
@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 // First add 1 to the file position
                 filePos++;
                 progressImageScan();
+                return false;
             }
 
             Bitmap tempMap = null;
@@ -218,12 +219,14 @@ public class MainActivity extends AppCompatActivity {
 
                 File saveFile = Save.mainDirectory(MainActivity.this);
                 save.saver(croppedMap, saveFile, MainActivity.this);
+
             }
 
             // First add 1 to the file position
             filePos++;
 
             progressImageScan();
+            return true;
         }
         else
         {
@@ -231,13 +234,14 @@ public class MainActivity extends AppCompatActivity {
             croppedMap = cropImg.cropImage(contentURI, this);
 
             if(croppedMap == null)
-                return;
+                return false;
 
             imageView.setImageBitmap(croppedMap);
 
             // Get a compressed bitmap and pass it into startPostCrop
 
             startPostCrop(compressBitmap(croppedMap));
+            return true;
         }
     }
 
@@ -318,11 +322,11 @@ public class MainActivity extends AppCompatActivity {
         progressImageScan();
     }
 
-    private void progressImageScan()
+    public boolean progressImageScan()
     {
         // If we aren't filescanning don't do this logic
         if(!imageScanning)
-            return;
+            return false;
 
         // Then check if we've reached the last image (In this case, filePos is 1 greater than the size
         if(filePos >= filesScanned.size())
@@ -330,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
             filePos = -1;
             filesScanned = null;
             imageScanning = false;
-            return;
+            return false;
         }
         else
         {
@@ -347,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 cropIfImageDetected();
             }
+            return true;
         }
 
     }
@@ -362,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         firebaseDetectionObject.runTextDetection(instaCrop);
     }
 
-    private byte[] compressBitmap(Bitmap mapToCompress)
+    public byte[] compressBitmap(Bitmap mapToCompress)
     {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);

@@ -42,4 +42,12 @@ public class MainActivityTest {
     @Test
     public void openSettings() {
     }
+
+    @Test
+    public void compressBitmap() {
+    }
+
+    @Test
+    public void progressImageScan() {
+    }
 }
