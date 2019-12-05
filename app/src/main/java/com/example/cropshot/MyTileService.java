@@ -2,12 +2,9 @@ package com.example.cropshot;
 
 import android.content.Context;
 
-import android.graphics.Bitmap;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import android.view.View;
 import android.widget.Toast;
-import java.io.ByteArrayOutputStream;
 import android.content.Intent;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -32,16 +29,14 @@ public class MyTileService extends TileService {
         return intent;
     }
 
-    private void takeScreenshot(View v) {
-        View screenView = v.getRootView();
-
-
-    }
-
     @Override
     public void onTileAdded() {
         super.onTileAdded();
+        MyTileService myTileService = new MyTileService();
+        myTileService.structureTile();
+    }
 
+    public boolean structureTile(){
         //Tile state set to active. Button label set to its functionality.
         Tile tile = getQsTile();
         tile.setState(Tile.STATE_ACTIVE);
@@ -49,6 +44,12 @@ public class MyTileService extends TileService {
         tile.updateTile();
 
         Toast.makeText(getApplicationContext(), "tile added", Toast.LENGTH_SHORT).show();
+        //If tile is not properly set up, return false. If getQsTile() does not implement properly,
+        //tile.setState(Tile.STATE_ACTIVE) would fail, causing function below to fail.
+        if (tile.getState() != Tile.STATE_ACTIVE){
+            return false;}
+        else{
+            return true;}
     }
 
     @Override
