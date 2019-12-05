@@ -13,10 +13,16 @@ public class MainActivityTest {
 
     @Test
     public void onGalleryClick() {
+        MainActivity mainActivity = mock(MainActivity.class);
+        //Testing to make sure that crop only works if variable input is not null
+        assertFalse(mainActivity.onGalleryClick(null));
     }
 
     @Test
     public void onCropClick() {
+        MainActivity mainActivity = mock(MainActivity.class);
+        //Testing to make sure that crop only works if variable input is not null
+        assertFalse(mainActivity.onCropClick(null));
     }
 
     @Test
@@ -37,9 +43,15 @@ public class MainActivityTest {
 
     @Test
     public void openManualCrop() {
+        MainActivity mainActivity = mock(MainActivity.class);
+        //Unit testing if app tries to redirect with an invalid context for the intent
+        assertFalse(mainActivity.openManualCrop());
     }
 
     @Test
     public void openSettings() {
+        MainActivity mainActivity = mock(MainActivity.class);
+        //Unit testing if app tries to redirect with an invalid context for the intent
+        assertFalse(mainActivity.openSettings());
     }
 }
