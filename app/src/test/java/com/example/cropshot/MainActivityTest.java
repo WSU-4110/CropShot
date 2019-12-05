@@ -58,6 +58,8 @@ public class MainActivityTest {
     public void openSettings() {
         MainActivity mainActivity = mock(MainActivity.class);
         //Unit testing if app tries to redirect with an invalid context for the intent
+        //Since mock classes are always null, the this* context within openSettings() would also be null,
+        //which in turn would return false.
         assertFalse(mainActivity.openSettings());
     }
 
