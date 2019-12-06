@@ -20,27 +20,27 @@ public class ManualCropTest {
     @Test
     public void startCrop() {
 
-        ManualCrop MCTEST = new ManualCrop();
-        Uri imageuri = null;
+        ManualCrop MCTEST = mock(ManualCrop.class);
+        Uri imageuri = mock(Uri.class);
 
-        assertTrue(MCTEST.startCrop(imageuri));
+        assertFalse(MCTEST.startCrop(imageuri));
     }
 
     @Test
     public void openGOBACK() {
 
-        ManualCrop MCTEST = new ManualCrop();
+        ManualCrop MCTEST = mock(ManualCrop.class);
 
-        assertTrue(MCTEST.openGOBACK());
+        assertFalse(MCTEST.openGOBACK());
     }
 
     @Test
     public void onSaveNewClick() {
 
-        View v = null;
-        ManualCrop MCTEST = new ManualCrop();
+        View v = mock(View.class);
+        ManualCrop MCTEST = mock(ManualCrop.class);
 
-        assertTrue(MCTEST.onSaveNewClick(v));
+        assertFalse(MCTEST.onSaveNewClick(v));
 
 
     }
