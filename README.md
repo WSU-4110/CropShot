@@ -31,5 +31,8 @@ b.	 Once you adjust the crop window to what is desired, you can save the image i
 4.	Settings
 a.	To adjust the settings, click on the “settings” button
 b.	To learn who developed the application and what version of the application you own, click on the “About” button
-c.	The user has the option to use ML and firebase detection. Is this button is turned on, the application will use machine learning when deciding whether to crop an image. Having this button turned on may 
+c.	You can toggle between dark and light (normal) mode by clicking on the toggle button. Dark mode will only put the application in dark mode, not the whole device.
+d.	The user has the option to use ML and firebase detection. If this button is turned on, the application will use machine learning when deciding whether to crop an image. 
 SHANE ADD STUFF TO 4C
+5.	Auto Scan Through gallery
+a.	If you click on the “Auto-Scan” button, the application will automatically go through your gallery and crop every Instagram image. When choosing this option, your images will be replaced with the newly cropped images. 
