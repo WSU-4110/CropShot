@@ -39,6 +39,10 @@ public class Save {
     }
 
     public static File saver(Bitmap bm, File saveFilePath, Context context) {
+        if (saveFilePath == null) {
+            File returner = null;
+            return returner;
+        }
         File dir = new File(saveFilePath.getAbsolutePath());
         if (!dir.exists()) dir.mkdirs();
         Random generator = new Random();
@@ -81,7 +85,7 @@ public class Save {
 
 
 
-    public void overwrite(Context context, Bitmap finalBitmap, Uri oglocation)
+    public boolean overwrite(Context context, Bitmap finalBitmap, Uri oglocation)
     {
 
         String path = null;
@@ -99,11 +103,12 @@ public class Save {
             mediaScanFile(context, dir);
             fout.flush();
             fout.close();
+            return true;
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-
+        return false;
     }
 
 

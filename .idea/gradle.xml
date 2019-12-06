@@ -3,15 +3,16 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <compositeConfiguration>
-          <compositeBuild compositeDefinitionSource="SCRIPT" />
-        </compositeConfiguration>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/gsonlibrary" />
+            <option value="$PROJECT_DIR$/libadd" />
+            <option value="$PROJECT_DIR$/libadd/gson-master" />
+            <option value="$PROJECT_DIR$/postcrop" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -58,7 +58,7 @@ public class PostCropActivity extends AppCompatActivity{
 
     }
 
-    public void setPostCropImage() {
+    public boolean setPostCropImage() {
         byte[] bytes = getIntent().getByteArrayExtra("cropBytes");
         cropMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
         ImageView cropImage = (ImageView) findViewById(R.id.CroppingImg);
@@ -66,10 +66,13 @@ public class PostCropActivity extends AppCompatActivity{
         precropuri = Uri.parse(uriString);
         cropImage.setImageBitmap(cropMap);
 
+        if (cropMap != null && precropuri != null) return true;
+
+        return false;
 
     }
 
-    public void onDiscardClick(View v)
+    public boolean onDiscardClick(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -95,10 +98,12 @@ public class PostCropActivity extends AppCompatActivity{
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        if (dialog != null) return true;
+        return false;
 
     }
 
-    public void onSaveNewClick(View v) {
+    public boolean onSaveNewClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Are You Sure?");
@@ -125,9 +130,11 @@ public class PostCropActivity extends AppCompatActivity{
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        if (dialog != null) return true;
+        return false;
     }
 
-    public void onOverwriteClick(View v) {
+    public boolean onOverwriteClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Are You Sure?");
@@ -154,10 +161,12 @@ public class PostCropActivity extends AppCompatActivity{
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        if (dialog != null) return true;
+        return false;
     }
 
 
-    public void onManualCropClick(View v) {
+    public boolean onManualCropClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Are You Sure?");
@@ -183,6 +192,8 @@ public class PostCropActivity extends AppCompatActivity{
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        if (dialog != null) return true;
+        return false;
     }
 
     public void openManualCrop(){
