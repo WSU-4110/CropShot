@@ -60,11 +60,11 @@ public class MainActivity extends AppCompatActivity {
     Uri contentURI;
     Uri postcropURI;
     Bitmap preCrop;
-    Bitmap croppedMap;
+    public Bitmap croppedMap;
 
     // Used for image scanning
     // Tracks whether or not we're preforming the image scan operation
-    boolean imageScanning;
+    public boolean imageScanning;
     // Holds the URLs for all the images we scanned in
     ArrayList<String> filesScanned;
     // Holds the index or our position in the list
@@ -157,13 +157,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onGalleryClick(View v) {
+    public boolean onGalleryClick(View v) {
+        if (v == null || this == null){
+            return false;
+        }
         Load loadObject = new Load();
         loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
-
+        return true;
     }
 
-    public void onCropClick(View v) {
+    public boolean onCropClick(View v) {
+        if (v == null || this == null){
+            return false;
+        }
         try {
             // If the user disables the useML functionality don't do this check
             if(SettingsSingleton.getInstance().getUseML())
@@ -178,9 +184,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
     }
 
-    public void cropIfImageDetected()
+    public boolean cropIfImageDetected()
     {
         // If we're scanning images currently we want different logic
         if(imageScanning)
@@ -199,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 // First add 1 to the file position
                 filePos++;
                 progressImageScan();
+                return false;
             }
 
             Bitmap tempMap = null;
@@ -218,12 +226,14 @@ public class MainActivity extends AppCompatActivity {
 
                 File saveFile = Save.mainDirectory(MainActivity.this);
                 save.saver(croppedMap, saveFile, MainActivity.this);
+
             }
 
             // First add 1 to the file position
             filePos++;
 
             progressImageScan();
+            return true;
         }
         else
         {
@@ -231,13 +241,14 @@ public class MainActivity extends AppCompatActivity {
             croppedMap = cropImg.cropImage(contentURI, this);
 
             if(croppedMap == null)
-                return;
+                return false;
 
             imageView.setImageBitmap(croppedMap);
 
             // Get a compressed bitmap and pass it into startPostCrop
 
             startPostCrop(compressBitmap(croppedMap));
+            return true;
         }
     }
 
@@ -318,11 +329,11 @@ public class MainActivity extends AppCompatActivity {
         progressImageScan();
     }
 
-    private void progressImageScan()
+    public boolean progressImageScan()
     {
         // If we aren't filescanning don't do this logic
         if(!imageScanning)
-            return;
+            return false;
 
         // Then check if we've reached the last image (In this case, filePos is 1 greater than the size
         if(filePos >= filesScanned.size())
@@ -330,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
             filePos = -1;
             filesScanned = null;
             imageScanning = false;
-            return;
+            return false;
         }
         else
         {
@@ -347,6 +358,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 cropIfImageDetected();
             }
+            return true;
         }
 
     }
@@ -362,8 +374,10 @@ public class MainActivity extends AppCompatActivity {
         firebaseDetectionObject.runTextDetection(instaCrop);
     }
 
-    private byte[] compressBitmap(Bitmap mapToCompress)
+    public byte[] compressBitmap(Bitmap mapToCompress)
     {
+        if(mapToCompress == null)
+            return null;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         croppedMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] bytes = stream.toByteArray();
@@ -423,17 +437,25 @@ public class MainActivity extends AppCompatActivity {
         startActivity(postcrop);
     }
 
-    public void openManualCrop(){
+    public boolean openManualCrop(){
+        //If package context being passed through is null
+        if (this == null)
+            return false;
         Intent intent = new Intent(this,ManualCrop.class);
 
         if(contentURI != null)
             intent.putExtra("imageUri", contentURI.toString());
         startActivity(intent);
+        return true;
     }
 
-    public void openSettings(){
+    public boolean openSettings(){
+        //If package context being passed through is null
+        if (this == null)
+            return false;
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+        return true;
     }
 }
 

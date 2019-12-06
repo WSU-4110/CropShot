@@ -38,9 +38,9 @@ public class Crop {
     // Returns true if the pixels are in a similar range
     // And false otherwise
     boolean CheckColor(int left, int right){
-        int leftSum = Color.red(left) + Color.green(left) + Color.blue(left);
-        int rightSum = Color.red(right) + Color.green(right) + Color.blue(right);
-        int diff = leftSum - rightSum;
+        //int leftSum = Color.red(left) + Color.green(left) + Color.blue(left);
+      //  int rightSum = Color.red(right) + Color.green(right) + Color.blue(right);
+        int diff = left - right;
 
 
         if (diff < 10 && diff > -10) {
@@ -113,9 +113,12 @@ public class Crop {
             int left_pixel = row.getPixel(0, height - 1);
             int right_pixel = row.getPixel(i, height - 1);
 
+            int leftSum = Color.red(left_pixel) + Color.green(left_pixel) + Color.blue(left_pixel);
+            int rightSum = Color.red(right_pixel) + Color.green(right_pixel) + Color.blue(right_pixel);
+
 
             //Checks if the pixels are the same color or if the pixels meet
-            if (!CheckColor(left_pixel, right_pixel)) {
+            if (!CheckColor(leftSum, rightSum)) {
                 return false;
             }
         }

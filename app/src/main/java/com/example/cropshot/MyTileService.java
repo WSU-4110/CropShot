@@ -21,6 +21,11 @@ public class MyTileService extends TileService {
     }
 
     public Intent createIntent(Context context){
+        if (context == null){
+            Intent intent2 = null;
+            return intent2;
+        }
+
         System.out.println("Starting createIntent");
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);

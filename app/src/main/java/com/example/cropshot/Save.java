@@ -21,14 +21,6 @@ import java.util.Random;
 
 public class Save {
 
-
-
-
-
-
-
-
-
     public static File mainDirectory(Context context) {
         File mainDir = new File ("/sdcard/Pictures");
         File mainDirec = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "screenshotsaver");

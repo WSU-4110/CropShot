@@ -149,8 +149,9 @@ public class ManualCrop extends AppCompatActivity {
 
             }
         });
-        AlertDialog dialog = builder.create();
-        dialog.show();
         return true;
+        //AlertDialog dialog = builder.create();
+        //dialog.show();
+        //return true;
     }
 }
