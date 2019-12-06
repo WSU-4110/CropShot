@@ -24,4 +24,4 @@ android:
 before_install:
     - chmod +x gradlew
 script:
-    - gradle check
+    - ./gradlew test
