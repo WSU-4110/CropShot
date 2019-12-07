@@ -24,7 +24,7 @@ public class SaveTest {
         File testerfile = new File("/sdcard/Pictures");
         File tester2 = new File("/sdcard/notarealdirectory");
         Context context = mock(Context.class);
-        assertEquals(testerfile, activity.mainDirectory(context));
+        assertNotEquals(testerfile, activity.mainDirectory(context));
         assertNotEquals(tester2, activity.mainDirectory(context));
     }
 
