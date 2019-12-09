@@ -55,13 +55,6 @@ public class PostCropActivity extends AppCompatActivity{
         setContentView(R.layout.activity_crop_save);
         setPostCropImage();
 
-        MCROP = (Button) findViewById(R.id.ManualCrop);
-        MCROP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openManualCrop();
-            }
-        });
 
     }
 
@@ -134,9 +127,63 @@ public class PostCropActivity extends AppCompatActivity{
         dialog.show();
     }
 
-    //public void onOverwriteClick//
+    public void onOverwriteClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Are You Sure?");
+        builder.setMessage("Do you want to overwrite?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    Save newsave = new Save();
+                    newsave.overwrite(PostCropActivity.this, cropMap, precropuri);
+                    Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
+                    startActivity(mainactivity);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
 
+    public void onManualCropClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Are You Sure?");
+        builder.setMessage("Do you want to manually crop?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    Intent manualcropactivity = new Intent(PostCropActivity.this,ManualCrop.class);
+                    manualcropactivity.putExtra("imageUri",precropuri.toString());
+                    startActivity(manualcropactivity);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
     public void openManualCrop(){
         Intent intent = new Intent(this,ManualCrop.class);

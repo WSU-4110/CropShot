@@ -24,24 +24,18 @@
         android:layout_gravity="center"
         android:padding="20dp">
 
-        <ImageButton
+        <Button
             android:id="@+id/b_browser"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/bg_round"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/buttoncolor"
             android:onClick="onGalleryClick"
-            android:src="@drawable/ic_image" />
+            android:text="Gallery"
+            android:textColor="#fff" />
 
         <Space
             android:layout_width="20dp"
             android:layout_height="wrap_content"/>
-
-        <ImageButton
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:id="@+id/bt_reset"
-            android:src="@drawable/ic_refresh"
-            android:background="@drawable/bg_round"/>
 
         <Button
             android:id="@+id/back"
@@ -50,7 +44,17 @@
             android:text="BACK"
             android:background="?attr/buttoncolor"
             android:textColor="#fff"
-            android:layout_marginLeft="50dp"/>
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="30dp"/>
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/buttoncolor"
+            android:textColor="#fff"
+            android:onClick="onSaveNewClick"
+            android:text="Save" />
 
     </LinearLayout>
 

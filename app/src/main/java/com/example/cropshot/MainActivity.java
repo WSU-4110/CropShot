@@ -201,12 +201,24 @@ public class MainActivity extends AppCompatActivity {
                 progressImageScan();
             }
 
-            imageView.setImageBitmap(croppedMap);
+            Bitmap tempMap = null;
 
-            Save save = new Save();
+            try {
+                tempMap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), fileUri);
+                System.out.println(tempMap.getHeight());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-            File saveFile = Save.mainDirectory(MainActivity.this);
-            save.saver(croppedMap, saveFile, MainActivity.this);
+            if(croppedMap.getHeight() != tempMap.getHeight())
+            {
+                imageView.setImageBitmap(croppedMap);
+
+                Save save = new Save();
+
+                File saveFile = Save.mainDirectory(MainActivity.this);
+                save.saver(croppedMap, saveFile, MainActivity.this);
+            }
 
             // First add 1 to the file position
             filePos++;
@@ -327,7 +339,14 @@ public class MainActivity extends AppCompatActivity {
             String filePath = filesScanned.get(filePos);
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
-            callFirebase(bitmap);
+            if(SettingsSingleton.getInstance().getUseML())
+            {
+                callFirebase(bitmap);
+            }
+            else
+            {
+                cropIfImageDetected();
+            }
         }
 
     }
