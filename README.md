@@ -36,6 +36,7 @@ This project contains the source code for an android application named CropShot.
 #### -	Once you select an image, you can choose to crop the image yourself by clicking on the “Manual Crop” Button (this button is also located in the Post Crop Screen)
 
 ![ManualCrop](https://github.com/WSU-4110/CropShot/blob/master/images/manualcrop.png)
+![ManualCropCllicked](https://github.com/WSU-4110/CropShot/blob/master/images/manualcropclicked.png)
 
 #### -	 Once you adjust the crop window to what is desired, you can save the image into the device’s gallery. 
 
@@ -46,6 +47,10 @@ This project contains the source code for an android application named CropShot.
 #### -	The user has the option to use ML and firebase detection. If this button is turned on, the application will use machine learning when deciding whether to crop an image. The firebase detection is not necessary for properly detecting MOST instagram images, but there are corner cases where this will rule out images that are false positives. Additionally, sometimes the firebase API has installation issues, if it seems like images that aren't cropping should be cropping, try turning this setting off and trying again.
 
 ![Settings](https://github.com/WSU-4110/CropShot/blob/master/images/settings.png)
+
+#### - Application in dark mode:
+
+![DarkMode](https://github.com/WSU-4110/CropShot/blob/master/images/darkmode.png)
 
 ## 5.	Auto Scan Through gallery
 #### -	If you click on the “Auto-Scan” button, the application will automatically go through your gallery and crop every Instagram image. When choosing this option, your original images are kept and the cropped images are saved as new.
