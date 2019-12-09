@@ -21,6 +21,7 @@ import android.database.Cursor;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -154,6 +155,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Get access to the Cropping image image view, and store it in a variable
         imageView = (ImageView) findViewById(R.id.CroppingImg);
+
+        final TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+        if(!textRecognizer.isOperational())
+        {
+            SettingsSingleton.getInstance().setUseML(false);
+        }
 
     }
 
