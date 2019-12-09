@@ -2,27 +2,17 @@ package com.example.cropshot;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.app.AppCompatDialogFragment;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.google.android.gms.vision.text.TextRecognizer;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
-
-import java.io.File;
 
 public class SettingsActivity extends AppCompatActivity {
 
