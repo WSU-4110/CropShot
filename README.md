@@ -41,9 +41,7 @@ This project contains the source code for an android application named CropShot.
 #### -	To adjust the settings, click on the “settings” button
 #### -	To learn who developed the application and what version of the application you own, click on the “About” button
 #### -	You can toggle between dark and light (normal) mode by clicking on the toggle button. Dark mode will only put the application in dark mode, not the whole device.
-#### -	The user has the option to use ML and firebase detection. If this button is turned on, the application will use machine learning when deciding whether to crop an image.
-
-# **HANE ADD STUFF TO 4C**
+#### -	The user has the option to use ML and firebase detection. If this button is turned on, the application will use machine learning when deciding whether to crop an image. The firebase detection is not necessary for properly detecting MOST instagram images, but there are corner cases where this will rule out images that are false positives. Additionally, sometimes the firebase API has installation issues, if it seems like images that aren't cropping should be cropping, try turning this setting off and trying again.
 
 ## 5.	Auto Scan Through gallery
-#### -	If you click on the “Auto-Scan” button, the application will automatically go through your gallery and crop every Instagram image. When choosing this option, your images will be replaced with the newly cropped images. 
+#### -	If you click on the “Auto-Scan” button, the application will automatically go through your gallery and crop every Instagram image. When choosing this option, your original images are kept and the cropped images are saved as new.
