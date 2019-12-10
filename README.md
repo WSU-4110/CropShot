@@ -53,4 +53,4 @@ This project contains the source code for an android application named CropShot.
 ![DarkMode](https://github.com/WSU-4110/CropShot/blob/master/images/darkmode.png)
 
 ## 5.	Auto Scan Through gallery
-#### -	If you click on the “Auto-Scan” button, the application will automatically go through your gallery and crop every Instagram image. When choosing this option, your original images are kept and the cropped images are saved as new.
+#### -	If you click on the “Scan Gallery” button, the application will automatically go through your gallery and crop every Instagram image. When choosing this option, your original images are kept and the cropped images are saved as new.
