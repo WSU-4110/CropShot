@@ -2,12 +2,10 @@ package com.example.cropshot;
 
 import android.content.Context;
 
-import android.graphics.Bitmap;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.view.View;
 import android.widget.Toast;
-import java.io.ByteArrayOutputStream;
 import android.content.Intent;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;

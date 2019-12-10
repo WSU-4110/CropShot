@@ -1,6 +1,5 @@
 package com.example.cropshot;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;

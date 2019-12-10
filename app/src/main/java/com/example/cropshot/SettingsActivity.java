@@ -2,15 +2,17 @@ package com.example.cropshot;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.app.AppCompatDialogFragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+
+import com.google.android.gms.vision.text.TextRecognizer;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -82,7 +84,30 @@ public class SettingsActivity extends AppCompatActivity {
                 }
 
                 else
-                    SettingsSingleton.getInstance().setUseML(true);
+                {
+                    final TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+                    if(textRecognizer.isOperational())
+                        SettingsSingleton.getInstance().setUseML(true);
+                    else
+                    {
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                        builder.setCancelable(true);
+                        builder.setTitle("Firebase detection isn't working!");
+                        builder.setMessage("Don't worry, you can still crop your images! If you want to set this option, perhaps try" +
+                                " redownloading the application, otherwise enjoy CropShot!");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                        MLswitch.setChecked(SettingsSingleton.getInstance().getUseML());
+                    }
+                }
+
             }
         });
 
