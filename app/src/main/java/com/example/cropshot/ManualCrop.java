@@ -102,11 +102,7 @@ public class ManualCrop extends AppCompatActivity {
                 .setMultiTouchEnabled(true)
                 .start(this);
     }
-
-    public void openGOBACK(){
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-    }
+    
 
     public void onBackClick(View v) {
         Intent intent = new Intent(this,MainActivity.class);
