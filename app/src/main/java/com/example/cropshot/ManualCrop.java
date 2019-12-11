@@ -47,13 +47,6 @@ public class ManualCrop extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manual_crop);
 
-        button = (Button) findViewById(R.id.back);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGOBACK();
-            }
-        });
 
         browser = findViewById(R.id.b_browser);
         btsave = findViewById(R.id.save);
