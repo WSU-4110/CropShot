@@ -21,11 +21,6 @@ public class PostCropActivity extends AppCompatActivity{
 
     Bitmap cropMap;
     Uri precropuri;
-    Button saveNew;
-    Button overwrite;
-    Button Discard;
-    Button MCROP;
-    Uri contentURI;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -54,6 +49,7 @@ public class PostCropActivity extends AppCompatActivity{
 
     }
 
+    //all the alertdialogs in the onclick functions contain the executable code once the confirm button is clicked
     public void onDiscardClick(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -64,6 +60,7 @@ public class PostCropActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
+     //this will kick you back to the main screen
                     Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
                     startActivity(mainactivity);
                 }
@@ -92,7 +89,9 @@ public class PostCropActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
+                    //maindirectory finds new folder in which to save pictures and creates it if it does not exist
                     File saveFile = Save.mainDirectory(PostCropActivity.this);
+                    //saver passes the bitmap and the location from maindirectory to save the image there
                     File file = Save.saver(cropMap,saveFile, PostCropActivity.this);
                     Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
                     startActivity(mainactivity);
@@ -122,6 +121,7 @@ public class PostCropActivity extends AppCompatActivity{
             public void onClick(DialogInterface dialog, int which) {
                 try {
                     Save newsave = new Save();
+                    //the precropuri is passed to overwrite to provide a location for which to save
                     newsave.overwrite(PostCropActivity.this, cropMap, precropuri);
                     Intent mainactivity = new Intent(PostCropActivity.this,MainActivity.class);
                     startActivity(mainactivity);
@@ -170,12 +170,4 @@ public class PostCropActivity extends AppCompatActivity{
         dialog.show();
     }
 
-    public void openManualCrop(){
-        Intent intent = new Intent(this,ManualCrop.class);
-
-        //if(contentURI != null)
-          //  intent.putExtra("imageUri", contentURI.toString());
-
-        startActivity(intent);
-    }
 }

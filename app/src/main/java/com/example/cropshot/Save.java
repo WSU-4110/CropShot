@@ -18,7 +18,7 @@ public class Save {
 
     public static File mainDirectory(Context context) {
         File mainDir = new File ("/sdcard/Pictures");
-        File mainDirec = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "screenshotsaver");
+        //checks to see if it exists and creates the directory if it does not exist
         if (!mainDir.exists()) {
             if (mainDir.mkdirs()) Log.e("Create Directory", "Save Directory Created: " + mainDir);
         }
@@ -34,6 +34,7 @@ public class Save {
         String fileName = "ImageCropShotter-" + n + ".jpg";
         File file = new File(saveFilePath.getAbsolutePath(), fileName);
         try {
+            //the following code places the bitmap into the file location we want
             FileOutputStream fout = new FileOutputStream(file);
             bm.compress(Bitmap.CompressFormat.JPEG, 85, fout);
 
@@ -50,6 +51,8 @@ public class Save {
 
     }
 
+
+    //required to refresh the gallery and show new images
     private static void mediaScanFile (Context context, File file)
     {
         MediaScannerConnection.scanFile(
@@ -73,6 +76,7 @@ public class Save {
 
         String path = null;
         String[] proj = { MediaStore.MediaColumns.DATA };
+        //receives file path from the uri that we wish to overwrite at
         Cursor cursor = context.getContentResolver().query(oglocation, proj, null, null, null);
         if (cursor.moveToFirst()) {
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
@@ -83,6 +87,7 @@ public class Save {
         try {
             FileOutputStream fout = new FileOutputStream(dir);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fout);
+            //refreshes gallery
             mediaScanFile(context, dir);
             fout.flush();
             fout.close();
@@ -92,6 +97,7 @@ public class Save {
         }
 
     }
+
 
 
 }

@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -46,13 +47,6 @@ public class ManualCrop extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manual_crop);
 
-        button = (Button) findViewById(R.id.back);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGOBACK();
-            }
-        });
 
         browser = findViewById(R.id.b_browser);
         btsave = findViewById(R.id.save);
@@ -61,7 +55,7 @@ public class ManualCrop extends AppCompatActivity {
         btsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSaveNewClick(v);
+                onManualSaveNewClick(v);
             }
         });
 
@@ -69,17 +63,13 @@ public class ManualCrop extends AppCompatActivity {
         Bundle extras = intent.getExtras();
         if(extras != null)
         {
-            Uri myUri = Uri.parse(extras.getString("imageUri"));
-            startCrop(myUri);
+            uri = Uri.parse(extras.getString("imageUri"));
+            startCrop(uri);
         }
 
     }
 
-    public void onGalleryClick(View v) {
-        Load loadObject = new Load();
-        loadObject.accessGallery(this, IMAGE_GALLERY_REQUEST);
 
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -112,13 +102,14 @@ public class ManualCrop extends AppCompatActivity {
                 .setMultiTouchEnabled(true)
                 .start(this);
     }
+    
 
-    public void openGOBACK(){
+    public void onBackClick(View v) {
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
     }
 
-    public void onSaveNewClick(View v) {
+    public void onManualSaveNewClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Are You Sure?");
@@ -128,8 +119,37 @@ public class ManualCrop extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 try {
                     File saveFile = Save.mainDirectory(ManualCrop.this);
-                    Bitmap cropMap = MediaStore.Images.Media.getBitmap(ManualCrop.this.getContentResolver(), uri);
-                    //File file = Save.saver(cropMap,saveFile, ManualCrop.this);
+                    Bitmap cropMap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                    File file = Save.saver(cropMap,saveFile, ManualCrop.this);
+                    Intent mainactivity = new Intent(ManualCrop.this,MainActivity.class);
+                    startActivity(mainactivity);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void onManualOverwriteClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Are You Sure?");
+        builder.setMessage("Do you want to overwrite?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    Save newsave = new Save();
+                    newsave.overwrite(ManualCrop.this, ((BitmapDrawable)imageView.getDrawable()).getBitmap(), uri);
                     Intent mainactivity = new Intent(ManualCrop.this,MainActivity.class);
                     startActivity(mainactivity);
                 }
