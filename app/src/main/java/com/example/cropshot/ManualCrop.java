@@ -159,9 +159,8 @@ public class ManualCrop extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
-                    File saveFile = Save.mainDirectory(ManualCrop.this);
-                    Bitmap cropMap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-                    File file = Save.saver(cropMap,saveFile, ManualCrop.this);
+                    Save newsave = new Save();
+                    newsave.overwrite(ManualCrop.this, ((BitmapDrawable)imageView.getDrawable()).getBitmap(), uri);
                     Intent mainactivity = new Intent(ManualCrop.this,MainActivity.class);
                     startActivity(mainactivity);
                 }
