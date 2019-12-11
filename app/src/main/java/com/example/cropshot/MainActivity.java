@@ -15,21 +15,11 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.graphics.Color;
-import android.database.Cursor;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-
+import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.text.FirebaseVisionText;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -40,10 +30,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -155,6 +141,12 @@ public class MainActivity extends AppCompatActivity {
         // Get access to the Cropping image image view, and store it in a variable
         imageView = (ImageView) findViewById(R.id.CroppingImg);
 
+        final TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+        if(!textRecognizer.isOperational())
+        {
+            SettingsSingleton.getInstance().setUseML(false);
+        }
+
     }
 
     public void onGalleryClick(View v) {
@@ -231,7 +223,15 @@ public class MainActivity extends AppCompatActivity {
             croppedMap = cropImg.cropImage(contentURI, this);
 
             if(croppedMap == null)
+            {
+                Context context = getApplicationContext();
+                CharSequence text = "Failed to crop! This image isn't from instagram!";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
                 return;
+            }
 
             imageView.setImageBitmap(croppedMap);
 
@@ -313,9 +313,20 @@ public class MainActivity extends AppCompatActivity {
     // Call this function when the scan detects a non-instagram image
     public void scannedNonInstagramImage()
     {
-        // First add 1 to the file position
-        filePos++;
-        progressImageScan();
+        if(imageScanning) {
+            // First add 1 to the file position
+            filePos++;
+            progressImageScan();
+        }
+        else
+        {
+            Context context = getApplicationContext();
+            CharSequence text = "Failed to crop! This image isn't from instagram!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
     }
 
     private void progressImageScan()
